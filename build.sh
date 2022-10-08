@@ -23,4 +23,4 @@ fi
 
 javac -sourcepath "$SRC" -d "$BUILD" -h "$BUILD" $(find "$SRC/" -name "*.java")
 cp -r "$SRC/res" "$BUILD/"
-jar -e "$ENTRY_PT" -cvf "$JAR_NAME" -C "$BUILD" $(find "$BUILD/"*)
+jar -cvf "$JAR_NAME" $(find "$BUILD/"*)
