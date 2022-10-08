@@ -21,10 +21,14 @@ elif [ "$1" = "cleaner" ]; then
     rm "$JAR_NAME"           2> /dev/null
     exit 0
 elif [ "$1" = "" ]; then
+    echo "running javac on $SRC/*.java"
     javac -sourcepath "$SRC" -d "$BUILD" -h "$BUILD" $(find "$SRC/" -name "*.java")
     cp -r "$SRC/res" "$BUILD/"
+    echo "entered sir $BUILD"
     cd "$BUILD"
+    echo "running jar..."
     jar -cvmf "../$MANIFEST" "../$JAR_NAME" $(find ./)
+    echo "done"
 else
     echo "build.sh: invalid argument"
     exit 1
