@@ -38,14 +38,14 @@ final class GUI extends JFrame{
 
         //JFrame frame properties.
         setTitle("Lunar Rocket Sim LRS");
-        BufferedImage AppIcon = new SpriteSheet(ImageLoader.loadImage("images/AppIcon.png")).Crop(0, 0, 48, 48);
+        BufferedImage AppIcon = new SpriteSheet(ImageLoader.loadImage("res/AppIcon.png")).Crop(0, 0, 48, 48);
         setIconImage(AppIcon);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(width,height);
         setResizable(false);
         setLocationRelativeTo(null);
         setLayout(null);
-        
+
         //Canvas cnvs_space properties.
         cnvs_space.setBounds(0, 0, width, height);
         cnvs_space.setMinimumSize(new Dimension(width-256, height-128));

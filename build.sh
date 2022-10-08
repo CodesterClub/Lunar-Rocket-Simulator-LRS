@@ -23,7 +23,8 @@ elif [ "$1" = "cleaner" ]; then
 elif [ "$1" = "" ]; then
     javac -sourcepath "$SRC" -d "$BUILD" -h "$BUILD" $(find "$SRC/" -name "*.java")
     cp -r "$SRC/res" "$BUILD/"
-    jar -cvmf "$MANIFEST" "$JAR_NAME" -C "$BUILD" $(find "$BUILD"/* | sed "s/build\///")
+    cd "$BUILD"
+    jar -cvmf "../$MANIFEST" "../$JAR_NAME" $(find ./)
 else
     echo "build.sh: invalid argument"
     exit 1
