@@ -10,6 +10,8 @@ import java.util.StringTokenizer;
  * 3.  DROP STAGE [STAGE NO]
  * 4.  TIME WARP [WARP factor]
  * 5.  STATUS
+ * 6.  var <var> <val>
+ * 7.  var list <var>
  *
  * Developer command
  * var help
@@ -302,7 +304,7 @@ public class Console implements Runnable {
                                 " 1.  SELECT [ENGINE NO]\n" +
                                 " 2.  THRUST [% VALUE without % sign]\n" +
                                 " 3.  DROP STAGE [STAGE NO]\n" +
-                                " 4.  WARP TIME [WARP factor]" +
+                                " 4.  TIME WARP [WARP factor]\n" +
                                 " 5.  STATUS");
         }
         else {

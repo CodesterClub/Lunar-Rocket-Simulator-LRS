@@ -8,6 +8,8 @@ BUILD="$PROJECT_ROOT/build"
 ENTRY_PT="Main"
 JAR_NAME="Lunar-Rocket-Simulator-LRS.jar"
 
+mkdir -p "$BUILD"
+
 if [ "$1" = "clean" ]; then
     rm -rf "$BUILD/"* 2> /dev/null
     exit 0

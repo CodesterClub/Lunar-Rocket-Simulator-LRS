@@ -46,12 +46,12 @@ public class AssetsImg {
 
     public static void initiate(){
         //Define SpriteSheet object.
-        launchPad12x2 = new SpriteSheet(ImageLoader.loadImage("images/launchPad12x2.png"));
-        Launchtower1x7 = new SpriteSheet(ImageLoader.loadImage("images/Launchtower1x7.png"));
-        payloadRsl0x0 = new SpriteSheet(ImageLoader.loadImage("images/payloadRsl0x0.png"));
-        points = new SpriteSheet(ImageLoader.loadImage("images/points.png"));
-        releases4x3 = new SpriteSheet(ImageLoader.loadImage("images/releases4x3.png"));
-        rockets1x7 = new SpriteSheet(ImageLoader.loadImage("images/rockets1x7.png"));
+        launchPad12x2 = new SpriteSheet(ImageLoader.loadImage("res/launchPad12x2.png"));
+        Launchtower1x7 = new SpriteSheet(ImageLoader.loadImage("res/Launchtower1x7.png"));
+        payloadRsl0x0 = new SpriteSheet(ImageLoader.loadImage("res/payloadRsl0x0.png"));
+        points = new SpriteSheet(ImageLoader.loadImage("res/points.png"));
+        releases4x3 = new SpriteSheet(ImageLoader.loadImage("res/releases4x3.png"));
+        rockets1x7 = new SpriteSheet(ImageLoader.loadImage("res/rockets1x7.png"));
 
         //Assign images to BufferedImage objects.
         rktCone=rockets1x7.Crop(0*WIDTH, 0*HEIGHT, 1*WIDTH, 1*HEIGHT);
@@ -59,7 +59,7 @@ public class AssetsImg {
         rktS2=rockets1x7.Crop(0*WIDTH, 3*HEIGHT, 1*WIDTH, 2*HEIGHT);
         rktS1=rockets1x7.Crop(0*WIDTH, 5*HEIGHT, 1*WIDTH, 2*HEIGHT);
         rktBurn=rockets1x7.Crop(0*WIDTH, 7*HEIGHT, 1*WIDTH, 2*HEIGHT);
-        rktFlame=new SpriteSheet(ImageLoader.loadImage("images/flame.png")).Crop(0 * WIDTH, 0 * HEIGHT, 32, 95);
+        rktFlame=new SpriteSheet(ImageLoader.loadImage("res/flame.png")).Crop(0 * WIDTH, 0 * HEIGHT, 32, 95);
 
         tower=Launchtower1x7.Crop(0*WIDTH, 0*HEIGHT, 1*WIDTH, 7*HEIGHT);
 
@@ -69,8 +69,8 @@ public class AssetsImg {
         earth=points.Crop(5, 0, 16, 16);
         moon=points.Crop(22, 0, 114, 114);
 
-        stars=ImageLoader.loadImage("images/stars.png");
-        skyGrad=ImageLoader.loadImage("images/skyGrad.png");
+        stars=ImageLoader.loadImage("res/stars.png");
+        skyGrad=ImageLoader.loadImage("res/skyGrad.png");
 
         rkt=payloadRsl0x0.Crop(0*WIDTH, 0*HEIGHT, 7*WIDTH, 5*HEIGHT);
         rktCovUp=payloadRsl0x0.Crop(7*WIDTH, 0*HEIGHT, 7*WIDTH, 2*HEIGHT);
