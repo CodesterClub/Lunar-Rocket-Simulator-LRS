@@ -1,4 +1,3 @@
-
 public class Activities {
     //global activity markers
     protected static final int BELOW_KARMAN       =  0;

@@ -6,6 +6,7 @@ import java.awt.image.BufferStrategy;
 class Sim implements Runnable {
 
     //Global variable declaration.
+    protected static boolean noGUI = false;
     protected final String title;
     protected final int width, height;
     protected boolean running = false;
@@ -13,7 +14,7 @@ class Sim implements Runnable {
     protected int CNVS_HEIGHT;
     protected byte state;
     protected double obsTime;
-    protected double dTime;
+    protected boolean outOfFuel = false;
     //belowKarman vars
     protected int xRktLaunch = (int) (5.8 * 64), yRktCone = 66 - 40, yRktS3 = 130 - 40, yRktS2 = 258 - 40, yRktS1 = 386 - 40, yRktBurn = 514 - 40, xFlame = (int) (5.8 * 64) + 15;
     protected int yTow = 1 * 64 - 40, yPad = 8 * 64 - 40, ySky = -9232, yStars = 0, yStage = 0;
@@ -50,19 +51,35 @@ class Sim implements Runnable {
     //Method responsible for updating values.
     protected void update() {
         if (AssetsVars.activity >= Activities.LAUNCH) {
-            //observation clock and time based actions, acts every 1/60 th of a second, so in 1 sec, timer reaches 60.
-            obsTime = AssetsVars.obsTime;
-            AssetsVars.obsTime += (0.01 * AssetsVars.warpF);
-            dTime = AssetsVars.obsTime - obsTime;
+            // Time
+            AssetsVars.upTime += 1 / AssetsVars.UPS;
+            // Calculations are started after launch. they can be done outside this if as well
+            AssetsVars.accG = AssetsVars.G_MEarth / Math.pow(AssetsVars.altitude + AssetsVars.radiusEarth, 2);
+            AssetsVars.dM = (AssetsVars.throttle / 100 * AssetsVars.ThrustMAX) / (AssetsVars.Isp * AssetsVars.accG);
+            if (AssetsVars.Mt >= AssetsVars.M0 && AssetsVars.Mfuel_t > 0) {
+                AssetsVars.Mt -=  AssetsVars.dM;
+                AssetsVars.Mfuel_t -= AssetsVars.dM;
+                AssetsVars.fuel = AssetsVars.Mfuel_t / AssetsVars.Mfuel0 * 100;
+            }
+            else if (!outOfFuel) {
+                AssetsVars.throttle = 0;
+                AssetsVars.Mfuel_t = 0;
+                AssetsVars.fuel = 0;
+                outOfFuel = true;
+                Console.write ("\r[E] Out of fuel!");
+                System.out.print ("\r    Press Enter to continue: ");
+            }
         }
-        //Event activities, enclosed in if then system.
-        if (AssetsVars.activity == (Activities.BELOW_KARMAN + 1) && AssetsVars.activity == Activities.LAUNCH) {
+        //Event activities, enclosed in if else construct.
+        if (AssetsVars.activity == Activities.LAUNCH) {
             state = AssetsVars.activity;
-            AssetsVars.Mt = AssetsVars.M0 - AssetsVars.dM * AssetsVars.obsTime;                //60 ups, so this value is for 1/60th of a second
-            AssetsVars.rktAcc = (AssetsVars.thrust * AssetsVars.M0 - 9.8 * AssetsVars.Mt) / AssetsVars.Mt / 10;
-            AssetsVars.rktVt = (float) (AssetsVars.rktAcc * AssetsVars.obsTime);
-            //AssetsVars.altitude += (int) (AssetsVars.rktVt);
-            AssetsVars.altitude = yPad - (8 * 64 - 40) + 3;
+
+            // The math and the physics
+            AssetsVars.totalAcc = (AssetsVars.throttle / 100 * AssetsVars.ThrustMAX) / AssetsVars.M0 - AssetsVars.accG;
+            AssetsVars.rktVt += AssetsVars.totalAcc;
+
+            AssetsVars.altitude += (int) (AssetsVars.rktVt);
+
             yTow += (int) AssetsVars.rktVt;
             yPad += (int) AssetsVars.rktVt;
             ySky += (int) AssetsVars.rktVt;
@@ -98,10 +115,10 @@ class Sim implements Runnable {
             if (AssetsVars.altitude >= 10000) {
                 //Following executed to stop above graphics and render low earth orbit beyondKarman
                 AssetsVars.activity = Activities.BEYOND_KARMAN;
-                AssetsVars.thrust = 0;
+                AssetsVars.throttle = 0;
                 //Writes mission log
-                System.out.println ("LAUNCHED SUCCESSFULLY");
-                System.out.println ("> Entering orbit.....");
+                Console.write ("\rLAUNCHED SUCCESSFULLY");
+                Console.write ("\r> Entering orbit.....");
             }
         } else if (AssetsVars.activity == Activities.RELEASE_PAYLOAD) {
             //Side activities so this won't have state backup
@@ -111,11 +128,17 @@ class Sim implements Runnable {
                 xPayload -= 1;
                 fx -= 1;
             }
+            if (xPayload == -447) {
+                Console.write ("\rDONE: Module ejected");
+                AssetsVars.activity = state;
+            }
         } else if (AssetsVars.activity == Activities.BEYOND_KARMAN) {
             //FOR MOON
             state = AssetsVars.activity;
-            xMoon = (int) (CNVS_WIDTH / 2 - 37 + 250 * Math.cos(2.663 * Math.pow(10, -6.0) * AssetsVars.obsTime));      //Parameter as wt (omega * time) for moon
-            yMoon = (int) (CNVS_HEIGHT / 2 - 37 + 250 * Math.sin(2.663 * Math.pow(10, -6.0) * AssetsVars.obsTime));     //Parameter as wt (omega * time) for moon
+            /**<TODO val="Relation of x and y with time">*/
+                xMoon = (int) (CNVS_WIDTH / 2 - 37 + 250 * Math.cos(2.663 * Math.pow(10, -6.0) * AssetsVars.upTime));      //Parameter as wt (omega * time) for moon
+                yMoon = (int) (CNVS_HEIGHT / 2 - 37 + 250 * Math.sin(2.663 * Math.pow(10, -6.0) * AssetsVars.upTime));     //Parameter as wt (omega * time) for moon
+            /**</TODO>*/
             //FOR ROCKET
             distOrbiter = (Math.sqrt(Math.pow((xOrbiter - CNVS_WIDTH / 2), 2) + Math.pow((yOrbiter - CNVS_HEIGHT / 2), 2)));        //Radius of revolution, using dist formula
             //wOrbiter = Math.sqrt(AssetsVars.G * AssetsVars.Mt / Math.pow(distOrbiter, 3));                                         //omega of rocket
@@ -123,7 +146,7 @@ class Sim implements Runnable {
             xOrbiter = (int) (hOrbiter + (aOrbiter / 2) * Math.cos(wOrbiter * tOrbiter));                               //Parameter as wt (omega * time) for rocket
             yOrbiter = (int) (kOrbiter + (bOrbiter / 2) * Math.sin(wOrbiter * tOrbiter));                               //Parameter as wt (omega * time) for rocket
             tOrbiter += 0.0004;
-            distOrbiter = Math.sqrt(AssetsVars.thrust / Math.pow(Math.PI, 2));
+            distOrbiter = Math.sqrt(AssetsVars.throttle / Math.pow(Math.PI, 2));
             //Orbit raising code: FIX these two lines:
             aOrbiter += (int) Math.abs(2 * distOrbiter * Math.cos(wOrbiter * tOrbiter));
             bOrbiter += (int) Math.abs(2 * distOrbiter * Math.sin(wOrbiter * tOrbiter));
@@ -138,15 +161,15 @@ class Sim implements Runnable {
             }
         } else if (AssetsVars.activity == Activities.POST_LUNAR_ENTRY) {
             state = AssetsVars.activity;
-            yLander += Math.sqrt(2 * (9.8 / 6 - AssetsVars.thrust) * entryH);
+            yLander += Math.sqrt(2 * (9.8 / 6 - AssetsVars.throttle) * entryH);
             if (entryH <= 100) {
                 AssetsVars.activity = Activities.NEAR_LUNAR_SURFACE;
             }
         } else if (AssetsVars.activity == Activities.NEAR_LUNAR_SURFACE) {
             state = AssetsVars.activity;
-            yLun += Math.sqrt(2 * (9.8 / 6 - AssetsVars.thrust) * entryH);
+            yLun += Math.sqrt(2 * (9.8 / 6 - AssetsVars.throttle) * entryH);
             if (entryH <= 0) {
-                if (Math.sqrt(2 * (9.8 / 6 - AssetsVars.thrust) * entryH) < 15) {
+                if (Math.sqrt(2 * (9.8 / 6 - AssetsVars.throttle) * entryH) < 15) {
                     AssetsVars.activity = Activities.MISSION_SUCCESFULL;
                 } else {
                     AssetsVars.activity = Activities.MISSION_FAILED;
@@ -186,7 +209,7 @@ class Sim implements Runnable {
             if (AssetsImg.skyGrad != null) {
                 gfx.drawImage(AssetsImg.skyGrad, 0, ySky, null);
             }
-            if (AssetsVars.thrust > 0) {
+            if (AssetsVars.throttle > 0) {
 		switch (AssetsVars.stageDumped) {
 		    case 0:
 			gfx.drawImage(AssetsImg.rktBurn, xRktLaunch, yRktBurn, null);
@@ -234,12 +257,10 @@ class Sim implements Runnable {
             gfx.drawImage(AssetsImg.rktCovUp, 256 + fx, yCovUp, null);
             gfx.drawImage(AssetsImg.rktCovDown, 256 + fx, yCovDown, null);
             if (xPayload == -447) {
-                System.out.println ("DONE: Module ejected");
-                AssetsVars.activity = state;
-                gfx.clearRect(0, 0, CNVS_WIDTH, CNVS_HEIGHT);
                 AssetsImg.rkt = null;
                 AssetsImg.rktCovUp = null;
                 AssetsImg.rktCovDown = null;
+                gfx.clearRect(0, 0, CNVS_WIDTH, CNVS_HEIGHT);
             }
         } else if (AssetsVars.activity == Activities.BEYOND_KARMAN) {
             gfx.drawImage(AssetsImg.stars, 0, 0, CNVS_WIDTH, CNVS_HEIGHT, null);
@@ -279,16 +300,18 @@ class Sim implements Runnable {
     }
 
     protected void initiate() {
-        /*Calling instance of GUI to create a window to
-         *display the GUI components.
-         */
-        ui = new GUI(title, width, height);
-        System.out.println ("Systems online...");
-        //Call initiate() from class Assets.
-        AssetsImg.initiate();
+        if (!Sim.noGUI) {
+            /* Calling instance of GUI to create a window to
+             * display the GUI components.
+             */
+            ui = new GUI(title, width, height);
+            //Call initiate() from class Assets.
+            AssetsImg.initiate();
+        }
+        Console.write ("\rSystems online...");
         //Get the canvas width and height.
-        CNVS_WIDTH = ui.getCanvas().getWidth();
-        CNVS_HEIGHT = ui.getCanvas().getHeight();
+        CNVS_WIDTH = width;
+        CNVS_HEIGHT = height;
         hOrbiter = CNVS_WIDTH / 2;
         kOrbiter = CNVS_HEIGHT / 2;
     }
@@ -299,14 +322,11 @@ class Sim implements Runnable {
     @Override
     public void run() {
         initiate();
-        double fps = 60;                                      //60 Hz display
         double deltaUpdate = 0, deltaFrames = 0;
         long now;
         long lastTime = System.nanoTime();
-        double timePerFrame = 1000000000 / fps;               //frames
-        //60 Hz updater
-        double timePerUpdate = 1000000000 / (60 * (AssetsVars.warpF > 0 ? AssetsVars.warpF : 1));
-        new Console().start();
+        double timePerFrame = 1000000000 / AssetsVars.FPS;
+        double timePerUpdate = 1000000000 / (AssetsVars.UPS * (AssetsVars.warpF > 0 ? AssetsVars.warpF : 1));
         while (running) {
             now = System.nanoTime();
             deltaUpdate += (now - lastTime) / timePerUpdate;
@@ -319,7 +339,7 @@ class Sim implements Runnable {
                 deltaUpdate--;
             }
             //Frames per second, higher frames makes display smooth
-            if (deltaFrames >= 1) {
+            if (deltaFrames >= 1 && !Sim.noGUI) {
                 //Calls render() to draw to screen.
                 render();
                 deltaFrames--;

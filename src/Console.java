@@ -10,27 +10,66 @@ import java.util.StringTokenizer;
  * 3.  DROP STAGE [STAGE NO]
  * 4.  TIME WARP [WARP factor]
  * 5.  STATUS
+ *
+ * Developer command
+ * var help
+ * var [AssetsVars.variable] [value]
+ * List of variables:
+ *      activity
+ *      engON
+ *      throttle
+ *      fuel
+ *      stageDumped
+ *      yFlame
+ *      FPS
+ *      UPS
+ *      upTime
+ *      warpF
+ *      accG
+ *      Isp
+ *      dM
+ *      Mfuel_t
+ *      Mt
+ *      scaleF
+ *      totalAcc
+ *      rktVt
+ *      altitude
  */
 
 public class Console implements Runnable {
-    
+
     protected Thread th;
     int tmp = 0;
     protected boolean running = false;
-    
+
     private boolean isOn_engS1 = false;
     private boolean isOn_engS2 = false;
     private boolean isOn_engS3 = false;
-    
+
+    protected static String read () {
+        BufferedReader stdin = new BufferedReader (
+                new java.io.InputStreamReader (System.in));
+        try {
+            return stdin.readLine ();
+        } catch (java.io.IOException ex) {
+            System.out.println (ex.toString());
+        }
+        return null;
+    }
+
+    protected static void write (String str) {
+        System.out.println (str);
+    }
+
     protected String readCommand () {
         BufferedReader stdin = new BufferedReader (
                 new java.io.InputStreamReader (System.in));
         try {
-            System.out.print ("\nLRS shell> ");                                   // prompt
+            System.out.print ("\nLRS shell> ");                                 // prompt
             AssetsVars.command = stdin.readLine ();                             // store command in variable, kinda uselss
             return AssetsVars.command;                                          // return that command, also useless
         } catch (java.io.IOException ex) {
-            System.err.println (ex.toString());
+            System.out.println (ex.toString());
         }
         return null;
     }
@@ -51,14 +90,14 @@ public class Console implements Runnable {
                     isOn_engS3 = true;
                     break;
                 default:
-                    System.err.println ("[E] unknown error\n");
+                    System.out.println ("\r[E] unknown error\n");
             }
         }
         else if (cmd.equalsIgnoreCase ("THRUST")) {
             inputThrust(Integer.parseInt (sT.nextToken ()));
         }
         else if (cmd.equalsIgnoreCase ("DROP")) {
-            byte stageNo = (byte) Integer.parseInt(sT.nextToken());
+            byte stageNo = (byte) Integer.parseInt(sT.nextToken ());
             switch(stageNo) {
                 case 1:
                     dumpStg1ActionPerformed();
@@ -70,7 +109,7 @@ public class Console implements Runnable {
                     ejectPayloadActionPerformed();
                     break;
                 default:
-                    System.err.println ("[E] unknown error\n");
+                    System.out.println ("\r[E] unknown error\n");
             }
         }
         else if (cmd.equalsIgnoreCase ("TIME")) {
@@ -80,17 +119,186 @@ public class Console implements Runnable {
             else throw new Exception ("incomplete command: expected WARP after TIME");
         }
         else if (cmd.equalsIgnoreCase ("STATUS")) {
-            System.out.println ("\nFUEL:       " + " %");
-            System.out.println ("THRUST:     " + AssetsVars.thrust + "%");
-            System.out.println ("ENGINE:     " + AssetsVars.engON + " ON");
-            System.out.println ("TIME WARP:  " + AssetsVars.warpF + "x");
-            System.out.println ("LAST STAGE: " + (int)(AssetsVars.stageDumped + 1) + " \n");
-            
-            System.out.println ("VELOCITY:   " + AssetsVars.rktVt + "m/s");
-            System.out.println ("DIST from closest body: " + AssetsVars.altitude + "m\n");
+            System.out.println ();
+            System.out.println ("\rFuel:       " + AssetsVars.fuel + " %");
+            System.out.println ("\rThrust:     " + AssetsVars.throttle + " %");
+            System.out.println ();
+            System.out.println ("\rVelocity:   " + AssetsVars.rktVt + " m/s");
+            System.out.println ("\rAltitude:   " + AssetsVars.altitude + " m from nearest body");
+            System.out.println ();
+            System.out.println ("\rFuel:       " + AssetsVars.Mfuel_t + " kg");
+            System.out.println ("\rMass:       " + AssetsVars.Mt + " kg");
+            System.out.println ();
+            System.out.println ("\rEngine:     " + AssetsVars.engON + " is ON");
+            System.out.println ("\rLast stage: " + (int)(AssetsVars.stageDumped + 1));
+            System.out.println ("\rTime warp:  " + AssetsVars.warpF + " times");
+        }
+        else if (cmd.equals ("var")) {
+            String var = sT.nextToken();
+            if (var.equalsIgnoreCase ("help")) {
+                Console.write ("\nList of variables:\n" +
+                               "    activity\n" +
+                               "    engON\n" +
+                               "    throttle\n" +
+                               "    fuel\n" +
+                               "    stageDumped\n" +
+                               "    yFlame\n" +
+                               "    FPS\n" +
+                               "    UPS\n" +
+                               "    upTime\n" +
+                               "    warpF\n" +
+                               "    accG\n" +
+                               "    Isp\n" +
+                               "    dM\n" +
+                               "    Mfuel_t\n" +
+                               "    Mt\n" +
+                               "    scaleF\n" +
+                               "    totalAcc\n" +
+                               "    rktVt\n" +
+                               "    altitude");
+            }
+            else if (var.equalsIgnoreCase ("list")) {
+                Console.write ("\nList of variables:\n" +
+                               "    activity     = " + AssetsVars.activity + "\n" +
+                               "    engON        = " + AssetsVars.engON + "\n" +
+                               "    throttle     = " + AssetsVars.throttle + "\n" +
+                               "    fuel         = " + AssetsVars.fuel + "\n" +
+                               "    stageDumped  = " + AssetsVars.stageDumped + "\n" +
+                               "    yFlame       = " + AssetsVars.yFlame + "\n" +
+                               "    FPS          = " + AssetsVars.FPS + "\n" +
+                               "    UPS          = " + AssetsVars.UPS + "\n" +
+                               "    upTime       = " + AssetsVars.upTime + "\n" +
+                               "    warpF        = " + AssetsVars.warpF + "\n" +
+                               "    accG         = " + AssetsVars.accG + "\n" +
+                               "    Isp          = " + AssetsVars.Isp + "\n" +
+                               "    dM           = " + AssetsVars.dM + "\n" +
+                               "    Mfuel_t      = " + AssetsVars.Mfuel_t + "\n" +
+                               "    Mt           = " + AssetsVars.Mt + "\n" +
+                               "    scaleF       = " + AssetsVars.scaleF + "\n" +
+                               "    totalAcc     = " + AssetsVars.totalAcc + "\n" +
+                               "    rktVt        = " + AssetsVars.rktVt + "\n" +
+                               "    altitude     = " + AssetsVars.altitude);
+            }
+            else if (var.equalsIgnoreCase ("activity")) {
+                if (sT.hasMoreTokens()) {
+                    AssetsVars.activity = Byte.parseByte (sT.nextToken());
+                }
+                else System.out.println ("    activity = " + AssetsVars.activity);
+            }
+            else if (var.equalsIgnoreCase ("engON")) {
+                if (sT.hasMoreTokens()) {
+                    AssetsVars.engON = Byte.parseByte (sT.nextToken());
+                }
+                else System.out.println ("    engON = " + AssetsVars.engON);
+            }
+            else if (var.equalsIgnoreCase("throttle")) {
+                if (sT.hasMoreTokens()) {
+                    AssetsVars.throttle = Integer.parseInt (sT.nextToken());
+                }
+                else System.out.println ("    throttle = " + AssetsVars.throttle);
+            }
+            else if (var.equalsIgnoreCase("fuel")) {
+                if (sT.hasMoreTokens()) {
+                    AssetsVars.fuel = Double.parseDouble (sT.nextToken());
+                }
+                else System.out.println ("    fuel = " + AssetsVars.fuel);
+            }
+            else if (var.equalsIgnoreCase("stageDumped")) {
+                if (sT.hasMoreTokens()) {
+                    AssetsVars.stageDumped = Byte.parseByte (sT.nextToken());
+                }
+                else System.out.println ("    stageDumped = " + AssetsVars.stageDumped);
+            }
+            else if (var.equalsIgnoreCase("yFlame")) {
+                if (sT.hasMoreTokens()) {
+                    AssetsVars.yFlame = Integer.parseInt (sT.nextToken());
+                }
+                else System.out.println ("    yFlame = " + AssetsVars.yFlame);
+            }
+            else if (var.equalsIgnoreCase("FPS")) {
+                if (sT.hasMoreTokens()) {
+                    AssetsVars.FPS = Integer.parseInt (sT.nextToken());
+                }
+                else System.out.println ("    FPS = " + AssetsVars.FPS);
+            }
+            else if (var.equalsIgnoreCase("UPS")) {
+                if (sT.hasMoreTokens()) {
+                    AssetsVars.UPS = Integer.parseInt (sT.nextToken());
+                }
+                else System.out.println ("    UPS = " + AssetsVars.UPS);
+            }
+            else if (var.equalsIgnoreCase("upTime")) {
+                if (sT.hasMoreTokens()) {
+                    AssetsVars.upTime = Integer.parseInt (sT.nextToken());
+                }
+                else System.out.println ("    upTime = " + AssetsVars.upTime);
+            }
+            else if (var.equalsIgnoreCase("warpF")) {
+                if (sT.hasMoreTokens()) {
+                    AssetsVars.warpF = Integer.parseInt (sT.nextToken());
+                }
+                else System.out.println ("    warpF = " + AssetsVars.warpF);
+            }
+            else if (var.equalsIgnoreCase("accG")) {
+                if (sT.hasMoreTokens()) {
+                    AssetsVars.accG = Double.parseDouble (sT.nextToken());
+                }
+                else System.out.println ("    accG = " + AssetsVars.accG);
+            }
+            else if (var.equalsIgnoreCase("Isp")) {
+                if (sT.hasMoreTokens()) {
+                    AssetsVars.Isp = Integer.parseInt (sT.nextToken());
+                }
+                else System.out.println ("    Isp = " + AssetsVars.Isp);
+            }
+            else if (var.equalsIgnoreCase("dM")) {
+                if (sT.hasMoreTokens()) {
+                    AssetsVars.dM = Double.parseDouble (sT.nextToken());
+                }
+                else System.out.println ("    dM = " + AssetsVars.dM);
+            }
+            else if (var.equalsIgnoreCase("Mfuel_t")) {
+                if (sT.hasMoreTokens()) {
+                    AssetsVars.Mfuel_t = Double.parseDouble (sT.nextToken());
+                }
+                else System.out.println ("    Mfuel_t = " + AssetsVars.Mfuel_t);
+            }
+            else if (var.equalsIgnoreCase("Mt")) {
+                if (sT.hasMoreTokens()) {
+                    AssetsVars.Mt = Double.parseDouble (sT.nextToken());
+                }
+                else System.out.println ("    Mt = " + AssetsVars.Mt);
+            }
+            else if (var.equalsIgnoreCase("scaleF")) {
+                if (sT.hasMoreTokens()) {
+                    AssetsVars.scaleF = Double.parseDouble (sT.nextToken());
+                }
+                else System.out.println ("    scaleF = " + AssetsVars.scaleF);
+            }
+            else if (var.equalsIgnoreCase("totalAcc")) {
+                if (sT.hasMoreTokens()) {
+                    AssetsVars.totalAcc = Double.parseDouble (sT.nextToken());
+                }
+                else System.out.println ("    totalAcc = " + AssetsVars.totalAcc);
+            }
+            else if (var.equalsIgnoreCase("rktVt")) {
+                if (sT.hasMoreTokens()) {
+                    AssetsVars.rktVt = Double.parseDouble (sT.nextToken());
+                }
+                else System.out.println ("    rktVt = " + AssetsVars.rktVt);
+            }
+            else if (var.equalsIgnoreCase("altitude")) {
+                if (sT.hasMoreTokens()) {
+                    AssetsVars.altitude = Double.parseDouble (sT.nextToken());
+                }
+                else System.out.println ("    altitude = " + AssetsVars.altitude);
+            }
+            else {
+                System.out.println("[E] No such variable");
+            }
         }
         else if (cmd.equalsIgnoreCase ("HELP")) {
-            System.out.println ("Commands\n" +
+            System.out.println ("\rCommands\n" +
                                 " 1.  SELECT [ENGINE NO]\n" +
                                 " 2.  THRUST [% VALUE without % sign]\n" +
                                 " 3.  DROP STAGE [STAGE NO]\n" +
@@ -98,11 +306,11 @@ public class Console implements Runnable {
                                 " 5.  STATUS");
         }
         else {
-            System.err.println ("[E] no such command: " + command);
-            System.err.println ("Enter HELP for commands list and syntax");
+            System.out.println ("\r[E] no such command: " + command);
+            System.out.println ("\rEnter HELP for commands list and syntax");
         }
     }
-    
+
     /**
      * Abstract method: Runs the code required to be run on thread
      */
@@ -113,8 +321,8 @@ public class Console implements Runnable {
                 try {
                     evaluate(AssetsVars.command);                                    // evaluates the command
                 } catch (Exception e) {
-                    System.err.println("[E] " + e);
-                    System.err.println("User input error. Please try again");
+                    System.out.println ("\r[E] " + e);
+                    System.out.println ("\r    User input error. Please try again");
                 }
             }
         }
@@ -158,68 +366,68 @@ public class Console implements Runnable {
         try {
             th.join ();
         } catch (InterruptedException e) {
-            System.err.print (e.toString ());
+            System.out.print (e.toString ());
             System.exit (0);
         }
     }
-    
+
     //Event actions
     private void inputThrust(int thrust) {
         if ((AssetsVars.engON == 1 && AssetsVars.stageDumped == 0) || (AssetsVars.engON == 2 && AssetsVars.stageDumped == 1) || (AssetsVars.engON == 3 && AssetsVars.stageDumped == 2)) {
             if (!(AssetsVars.activity >= Activities.LAUNCH)) {
                 try {
-                    AssetsVars.thrust = thrust;
+                    AssetsVars.throttle = thrust;
                 } catch (Exception ex) {
-                    System.out.println("[E] INVALID ENTRY FOR THRUST");
+                    System.out.println ("\r[E] INVALID ENTRY FOR THRUST");
                 }
-                if (AssetsVars.thrust < 0) {
-                    System.out.println("[E] NO ENGINE FOR ANTI THRUST");
-                } else if (AssetsVars.thrust < 10) {
-                    System.out.println("> Analyzing thrust...");
-                    System.out.println("[W] LOW THRUST");
-                } else if (AssetsVars.thrust >= 101) {
-                    System.out.println("> Analyzing thrust...");
-                    System.out.println("[E] INVALID COMMAND FOR: ");
-                    System.out.println("THRUST BEYOND 100");
-                } else if (AssetsVars.thrust >= 51) {
+                if (AssetsVars.throttle < 0) {
+                    System.out.println ("\r[E] NO ENGINE FOR ANTI THRUST");
+                } else if (AssetsVars.throttle < 10) {
+                    System.out.println ("\r> Analyzing thrust...");
+                    System.out.println ("\r[W] LOW THRUST");
+                } else if (AssetsVars.throttle >= 101) {
+                    System.out.println ("\r> Analyzing thrust...");
+                    System.out.println ("\r[E] INVALID COMMAND FOR: ");
+                    System.out.println ("\rTHRUST BEYOND 100");
+                } else if (AssetsVars.throttle >= 51) {
                     AssetsVars.activity = Activities.LAUNCH;
-                    System.out.println("> Analyzing thrust...");
-                    System.out.println("[W] THRUST TOO HIGH\n[W] CREW WON'T SURVIVE");
+                    System.out.println ("\r> Analyzing thrust...");
+                    System.out.println ("\r[W] THRUST TOO HIGH\n[W] CREW WON'T SURVIVE");
                 } else {
                     AssetsVars.activity = Activities.LAUNCH;
-                    System.out.println("> Analyzing thrust...");
-                    System.out.println("THRUST OPTIMUM");
-                    System.out.println("Rocket launched thrusting at: " + AssetsVars.thrust);
+                    System.out.println ("\r> Analyzing thrust...");
+                    System.out.println ("\rTHRUST OPTIMUM");
+                    System.out.println ("\rRocket launched thrusting at: " + AssetsVars.throttle);
                 }
             } else {
-                tmp = AssetsVars.thrust;
-                AssetsVars.thrust = thrust;
-                if (AssetsVars.thrust < 0) {
-                    AssetsVars.thrust = tmp;
-                    System.out.println("[E] INVALID ENTRY FOR THRUST");
-                } else if (AssetsVars.thrust >= 101) {
-                    AssetsVars.thrust = tmp;
-                    System.out.println("> Analyzing thrust...");
-                    System.out.println("[E] INVALID COMMAND FOR: ");
-                    System.out.println("THRUST BEYOND 100");
+                tmp = AssetsVars.throttle;
+                AssetsVars.throttle = thrust;
+                if (AssetsVars.throttle < 0) {
+                    AssetsVars.throttle = tmp;
+                    System.out.println ("\r[E] INVALID ENTRY FOR THRUST");
+                } else if (AssetsVars.throttle >= 101) {
+                    AssetsVars.throttle = tmp;
+                    System.out.println ("\r> Analyzing thrust...");
+                    System.out.println ("\r[E] INVALID COMMAND FOR: ");
+                    System.out.println ("\rTHRUST BEYOND 100");
                 } else {
-                    System.out.println("STAGE " + (AssetsVars.stageDumped + 1) + ": Thrust entered: " + AssetsVars.thrust);
+                    System.out.println ("\rSTAGE " + (AssetsVars.stageDumped + 1) + ": Thrust entered: " + AssetsVars.throttle);
                 }
             }
         } else {
-            System.out.println("Stage " + (AssetsVars.stageDumped + 1) + " Engine offline");
+            System.out.println ("\rStage " + (AssetsVars.stageDumped + 1) + " Engine offline");
         }
     }
-    
+
     private void dumpStg1ActionPerformed() {
         if (AssetsVars.stageDumped == 0) {
             AssetsVars.stageDumped = 1;
             isOn_engS1 = false;
-            System.out.println("Dumped stage 1");
-            AssetsVars.thrust = 0;
+            System.out.println ("\rDumped stage 1");
+            AssetsVars.throttle = 0;
             AssetsVars.yFlame -= 128;
         } else {
-            System.out.println("[E] STAGE DOESN'T EXIST");
+            System.out.println ("\r[E] STAGE DOESN'T EXIST");
         }
     }
 
@@ -227,15 +435,15 @@ public class Console implements Runnable {
         if (AssetsVars.stageDumped == 0 || AssetsVars.stageDumped == 1) {
             isOn_engS1 = false;
             isOn_engS2 = false;
-            System.out.println("Dumped stage 2");
-            AssetsVars.thrust = 0;
+            System.out.println ("\rDumped stage 2");
+            AssetsVars.throttle = 0;
             AssetsVars.yFlame -= 128;
             if (AssetsVars.stageDumped == 0) {
                 AssetsVars.yFlame -= 128;
             }
             AssetsVars.stageDumped = 2;
         } else {
-            System.out.println("[E] STAGE DOESN'T EXIST");
+            System.out.println ("\r[E] STAGE DOESN'T EXIST");
         }
     }
 
@@ -245,9 +453,9 @@ public class Console implements Runnable {
                 isOn_engS1 = false;
                 isOn_engS2 = false;
                 isOn_engS3 = false;
-                System.out.println("Dumped stage 3");
-                System.out.println("Ejecting Module....");
-                AssetsVars.thrust = 0;
+                System.out.println ("\rDumped stage 3");
+                System.out.println ("\rEjecting Module....");
+                AssetsVars.throttle = 0;
                 AssetsVars.activity = Activities.RELEASE_PAYLOAD;
                 if (AssetsVars.stageDumped == 0) {
                     AssetsVars.yFlame -= 128;
@@ -262,10 +470,10 @@ public class Console implements Runnable {
                 }
                 AssetsVars.stageDumped = 3;
             } else {
-                System.out.println("[E] COMMAND INVALID");
+                System.out.println ("\r[E] COMMAND INVALID");
             }
         } else {
-            System.out.println("[E] CAN'T REMOVE FAIRINGS");
+            System.out.println ("\r[E] CAN'T REMOVE FAIRINGS");
         }
     }
 
