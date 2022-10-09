@@ -10,6 +10,9 @@ public class Entity
     protected BufferedImage entityImg;
     protected List<Entity> attatchments;
 
+    protected System system;
+    protected Entity parent;
+
     /**
      * A soft entity cannot interact with any other entity.
      * Comes into play during collision detection.
@@ -75,6 +78,7 @@ public class Entity
      */
     public void attatch(Entity e)
     {
+        e.parent = this;
         if (this.attatchments == null)
             this.attatchments = new ArrayList<Entity>();
         this.attatchments.add(e);
@@ -84,9 +88,13 @@ public class Entity
      */
     public void flush()
     {
+        this.parent.attatchments.remove(this);
+        this.system.attatchments.remove(this);
         this.entityImg.flush();
         this.entityImg = null;
-        for (Entity e : this.attatchments)
-            e.flush();
+        if (this.attatchments != null)
+            for (Entity e : this.attatchments)
+                e.flush();
+        this.attatchments = null;
     }
 }

@@ -42,6 +42,7 @@ public class System
      */
     public void addEntity(Entity e)
     {
+        e.system = this;
         if (this.entities == null)
             this.entities = new ArrayList<Entity>();
         this.entities.add(e);
@@ -110,12 +111,21 @@ public class System
         gfx.dispose();
     }
     /**
+     * Get graphics object
+     */
+    public Graphics getGfx()
+    {
+        return this.bs.getDrawGraphics();
+    }
+    /**
      * Flush system with bg and all resources of its entities.
      */
     public void flush()
     {
         this.bg.flush();
-        for (Entity e : this.entities)
-            e.flush();
+        if (this.entites != null)
+            for (Entity e : this.entities)
+                e.flush();
+        this.entities = null;
     }
 }
