@@ -5,7 +5,7 @@ import java.awt.image.BufferStrategy;
 
 class Sim implements Runnable {
 
-    //Global variable declaration.
+    // Global variable declaration.
     protected static boolean noGUI = false;
     protected final String title;
     protected final int width, height;
@@ -15,27 +15,27 @@ class Sim implements Runnable {
     protected byte state;
     protected double obsTime;
     protected boolean outOfFuel = false;
-    //belowKarman vars
+    // belowKarman vars
     protected int xRktLaunch = (int) (5.8 * 64), yRktCone = 66 - 40, yRktS3 = 130 - 40, yRktS2 = 258 - 40, yRktS1 = 386 - 40, yRktBurn = 514 - 40, xFlame = (int) (5.8 * 64) + 15;
     protected int yTow = 1 * 64 - 40, yPad = 8 * 64 - 40, ySky = -9232, yStars = 0, yStage = 0;
-    //beyondKarman vars: release module
+    // beyondKarman vars: release module
     protected int yCovUp = 160;
     protected int yCovDown = 6 * 64;
     protected int xPayload = -192;
     protected int fx = 0;
-    //beyondKarman vars: orbit motion
+    // beyondKarman vars: orbit motion
     protected int xMoon, yMoon;
     protected int xOrbiter, yOrbiter, aOrbiter = 30, bOrbiter = 30, hOrbiter, kOrbiter;
     protected double distOrbiter = 5.0;
     protected double tOrbiter = 0, wOrbiter;
-    //lunEntry vars
-    protected int yEntry, xEntry = 0;               //x and y, projectile motion trajectory
-    protected double entryH, entryR, entryVx;       //param of a projectile motion
-    //postLunEntry vars
-    protected int yLander;                          //y, linear  downward motion of lander
-    //nearLunSurface vars
-    protected int yLun;                             //y, linear upward motion of lunar surface
-    //Global object declarations.
+    // lunEntry vars
+    protected int yEntry, xEntry = 0;               // x and y, projectile motion trajectory
+    protected double entryH, entryR, entryVx;       // param of a projectile motion
+    // postLunEntry vars
+    protected int yLander;                          // y, linear  downward motion of lander
+    // nearLunSurface vars
+    protected int yLun;                             // y, linear upward motion of lunar surface
+    // Global object declarations.
     protected GUI ui;
     protected BufferStrategy bs;
     protected Graphics gfx;
@@ -48,7 +48,7 @@ class Sim implements Runnable {
         this.height = height;
     }
 
-    //Method responsible for updating values.
+    // Method responsible for updating values.
     protected void update() {
         if (AssetsVars.activity >= Activities.LAUNCH) {
             // Time
@@ -70,16 +70,13 @@ class Sim implements Runnable {
                 System.out.print ("\r    Press Enter to continue: ");
             }
         }
-        //Event activities, enclosed in if else construct.
+        // Event activities, enclosed in if else construct.
         if (AssetsVars.activity == Activities.LAUNCH) {
             state = AssetsVars.activity;
-
             // The math and the physics
             AssetsVars.totalAcc = (AssetsVars.throttle / 100 * AssetsVars.ThrustMAX) / AssetsVars.M0 - AssetsVars.accG;
             AssetsVars.rktVt += AssetsVars.totalAcc;
-
             AssetsVars.altitude += (int) (AssetsVars.rktVt);
-
             yTow += (int) AssetsVars.rktVt;
             yPad += (int) AssetsVars.rktVt;
             ySky += (int) AssetsVars.rktVt;
@@ -113,15 +110,15 @@ class Sim implements Runnable {
                     break;
             }
             if (AssetsVars.altitude >= 10000) {
-                //Following executed to stop above graphics and render low earth orbit beyondKarman
+                // Following executed to stop above graphics and render low earth orbit beyondKarman
                 AssetsVars.activity = Activities.BEYOND_KARMAN;
                 AssetsVars.throttle = 0;
-                //Writes mission log
+                // Writes mission log
                 Console.write ("\rLAUNCHED SUCCESSFULLY");
                 Console.write ("\r> Entering orbit.....");
             }
         } else if (AssetsVars.activity == Activities.RELEASE_PAYLOAD) {
-            //Side activities so this won't have state backup
+            // Side activities so this won't have state backup
             yCovUp -= 1;
             yCovDown += 1;
             if (yCovUp <= 0) {
@@ -133,21 +130,21 @@ class Sim implements Runnable {
                 AssetsVars.activity = state;
             }
         } else if (AssetsVars.activity == Activities.BEYOND_KARMAN) {
-            //FOR MOON
+            // FOR MOON
             state = AssetsVars.activity;
-            /**<TODO val="Relation of x and y with time">*/
-                xMoon = (int) (CNVS_WIDTH / 2 - 37 + 250 * Math.cos(2.663 * Math.pow(10, -6.0) * AssetsVars.upTime));      //Parameter as wt (omega * time) for moon
-                yMoon = (int) (CNVS_HEIGHT / 2 - 37 + 250 * Math.sin(2.663 * Math.pow(10, -6.0) * AssetsVars.upTime));     //Parameter as wt (omega * time) for moon
-            /**</TODO>*/
-            //FOR ROCKET
-            distOrbiter = (Math.sqrt(Math.pow((xOrbiter - CNVS_WIDTH / 2), 2) + Math.pow((yOrbiter - CNVS_HEIGHT / 2), 2)));        //Radius of revolution, using dist formula
-            //wOrbiter = Math.sqrt(AssetsVars.G * AssetsVars.Mt / Math.pow(distOrbiter, 3));                                         //omega of rocket
+            /** <todo val="Relation of x and y with time"> */
+            xMoon = (int) (CNVS_WIDTH / 2 - 37 + 250 * Math.cos(2.663 * Math.pow(10, -6.0) * AssetsVars.upTime));      // Parameter as wt (omega * time) for moon
+            yMoon = (int) (CNVS_HEIGHT / 2 - 37 + 250 * Math.sin(2.663 * Math.pow(10, -6.0) * AssetsVars.upTime));     // Parameter as wt (omega * time) for moon
+            /** </todo> */
+            // for rocket
+            distOrbiter = (Math.sqrt(Math.pow((xOrbiter - CNVS_WIDTH / 2), 2) + Math.pow((yOrbiter - CNVS_HEIGHT / 2), 2)));        // Radius of revolution, using dist formula
+            // wOrbiter = Math.sqrt(AssetsVars.G * AssetsVars.Mt / Math.pow(distOrbiter, 3));                                         // omega of rocket
             wOrbiter = Math.PI;
-            xOrbiter = (int) (hOrbiter + (aOrbiter / 2) * Math.cos(wOrbiter * tOrbiter));                               //Parameter as wt (omega * time) for rocket
-            yOrbiter = (int) (kOrbiter + (bOrbiter / 2) * Math.sin(wOrbiter * tOrbiter));                               //Parameter as wt (omega * time) for rocket
+            xOrbiter = (int) (hOrbiter + (aOrbiter / 2) * Math.cos(wOrbiter * tOrbiter));                               // Parameter as wt (omega * time) for rocket
+            yOrbiter = (int) (kOrbiter + (bOrbiter / 2) * Math.sin(wOrbiter * tOrbiter));                               // Parameter as wt (omega * time) for rocket
             tOrbiter += 0.0004;
             distOrbiter = Math.sqrt(AssetsVars.throttle / Math.pow(Math.PI, 2));
-            //Orbit raising code: FIX these two lines:
+            // Orbit raising code: FIX these two lines:
             aOrbiter += (int) Math.abs(2 * distOrbiter * Math.cos(wOrbiter * tOrbiter));
             bOrbiter += (int) Math.abs(2 * distOrbiter * Math.sin(wOrbiter * tOrbiter));
         } else if (AssetsVars.activity == Activities.LUNAR_ENTRY) {
@@ -176,86 +173,85 @@ class Sim implements Runnable {
                 }
             }
         } else if (AssetsVars.activity == Activities.MISSION_SUCCESFULL) {
-
         } else if (AssetsVars.activity == Activities.MISSION_FAILED) {
-
         }
     }
-
-    //Method is responsible for drawing on Canvas cnvs_space.
+    // Method is responsible for drawing on Canvas cnvs_space.
     protected void render() {
-        //Buffer strategy of Canvas cnvs_space is obtained.
+        // Buffer strategy of Canvas cnvs_space is obtained.
         bs = ui.getCanvas().getBufferStrategy();
-        /*Sets new buffer strategy for Canvas cnvs_space
-         *if obtained value of bs = null.
+        /* Sets new buffer strategy for Canvas cnvs_space
+         * if obtained value of bs = null.
          */
         if (bs == null) {
-            /*Method getCanvas() uses the already
-             *created Canvas in class GUI.
+            /* Method getCanvas() uses the already
+             * created Canvas in class GUI.
              */
             ui.getCanvas().createBufferStrategy(3);
             return;
         }
-        //Creates a graphics context for the drawing buffer.
+        // Creates a graphics context for the drawing buffer.
         gfx = bs.getDrawGraphics();
         gfx.clearRect(0, 0, CNVS_WIDTH, CNVS_HEIGHT);
-
         if (AssetsVars.activity == Activities.BELOW_KARMAN || AssetsVars.activity == Activities.LAUNCH) {
             gfx.clearRect(0, 0, CNVS_WIDTH, CNVS_HEIGHT);
             if (ySky >= -1) {
-                //Set space (stars) background
-                gfx.drawImage(AssetsImg.stars, 0, 0, CNVS_WIDTH, CNVS_HEIGHT, null);
+                // Set space (stars) background
+                Entity star = Entities.stars(0, 0);
+                star.xBound = CNVS_WIDTH;
+                star.yBound = CNVS_HEIGHT;
+                star.render(gfx);
             }
             if (AssetsImg.skyGrad != null) {
-                gfx.drawImage(AssetsImg.skyGrad, 0, ySky, null);
+                Entities.skyGrad(0, ySky).render(gfx);
             }
             if (AssetsVars.throttle > 0) {
-		switch (AssetsVars.stageDumped) {
-		    case 0:
-			gfx.drawImage(AssetsImg.rktBurn, xRktLaunch, yRktBurn, null);
-			break;
-		    case 1:
-			gfx.drawImage(AssetsImg.rktFlame, xFlame, AssetsVars.yFlame, null);
-			break;
-		    case 2:
-			gfx.drawImage(AssetsImg.rktFlame, xFlame, AssetsVars.yFlame, null);
-			break;
-		    case 3:
-			gfx.drawImage(AssetsImg.rktFlame, xFlame, AssetsVars.yFlame, null);
-			break;
-		}
+		        switch (AssetsVars.stageDumped) {
+		        case 0:
+			        Entities.rktBurn(xRktLaunch, yRktBurn).render(gfx);
+			        break;
+		        case 1:
+			        Entities.rktFlame(xFlame, AssetsVars.yFlame).render(gfx);
+			        break;
+		        case 2:
+			        Entities.rktFlame(xFlame, AssetsVars.yFlame).render(gfx);
+			        break;
+		        case 3:
+			        Entities.rktFlame(xFlame, AssetsVars.yFlame).render(gfx);
+			        break;
+		        }
             }
             if (AssetsImg.rktCone != null) {
-                gfx.drawImage(AssetsImg.rktCone, xRktLaunch, yRktCone, null);
+                Entities.rktCone(xRktLaunch, yRktCone).render(gfx);
             }
             if (AssetsImg.rktS3 != null) {
-                gfx.drawImage(AssetsImg.rktS3, xRktLaunch, yRktS3, null);
+                Entities.rktS3(xRktLaunch, yRktS3).render(gfx);
             }
             if (AssetsImg.rktS2 != null) {
-                gfx.drawImage(AssetsImg.rktS2, xRktLaunch, yRktS2, null);
+                Entities.rktS2(xRktLaunch, yRktS2).render(gfx);
             }
             if (AssetsImg.rktS1 != null) {
-                gfx.drawImage(AssetsImg.rktS1, xRktLaunch, yRktS1, null);
+                Entities.rktS1(xRktLaunch, yRktS1).render(gfx);
             }
             if (AssetsImg.lPad != null) {
-                gfx.drawImage(AssetsImg.lPad, 0, yPad, null);
+                Entities.lPad(0, yPad).render(gfx);
             }
             if (AssetsImg.tower != null) {
-                gfx.drawImage(AssetsImg.tower, (int) (4.6 * 64), yTow, null);
+                Entities.tower((int) (4.6 * 64), yTow).render(gfx);
             }
             if (ySky >= 768) {
-                //Memory destruction
+                // Memory destruction
                 AssetsImg.lPad = null;
                 AssetsImg.tower = null;
                 AssetsImg.skyGrad = null;
             }
         } else if (AssetsVars.activity == Activities.RELEASE_PAYLOAD) {
-            gfx.drawImage(AssetsImg.stars, 0, 0, null);
+            Entities.stars(0, 0).render(gfx);
             gfx.clearRect(0, 0, CNVS_WIDTH, CNVS_HEIGHT);
-            gfx.drawImage(AssetsImg.payLoad, 192 - 32, 160 + 64, null);
-            gfx.drawImage(AssetsImg.rkt, xPayload, 160, null);
-            gfx.drawImage(AssetsImg.rktCovUp, 256 + fx, yCovUp, null);
-            gfx.drawImage(AssetsImg.rktCovDown, 256 + fx, yCovDown, null);
+            Entities.payLoad(192 - 32, 160 + 64).render(gfx);
+            Entities.rkt(xPayload, 160).render(gfx);
+            Entities.rktCovUp(256 + fx, yCovUp).render(gfx);
+            Entities.rktCovDown(256 + fx, yCovDown).render(gfx);
             if (xPayload == -447) {
                 AssetsImg.rkt = null;
                 AssetsImg.rktCovUp = null;
@@ -263,34 +259,50 @@ class Sim implements Runnable {
                 gfx.clearRect(0, 0, CNVS_WIDTH, CNVS_HEIGHT);
             }
         } else if (AssetsVars.activity == Activities.BEYOND_KARMAN) {
-            gfx.drawImage(AssetsImg.stars, 0, 0, CNVS_WIDTH, CNVS_HEIGHT, null);
+            Entity star = Entities.stars(0, 0);
+            star.xBound = CNVS_WIDTH;
+            star.yBound = CNVS_HEIGHT;
+            star.render(gfx);
             gfx.setColor(Color.darkGray);
-            gfx.drawArc(hOrbiter - aOrbiter / 2, kOrbiter - bOrbiter / 2, aOrbiter, bOrbiter, 0, 360);      //orbit of rocket
-            gfx.drawArc(CNVS_WIDTH / 2 - 250, CNVS_HEIGHT / 2 - 250, 500, 500, 0, 360);                     //draw orbit of moon
-            gfx.drawImage(AssetsImg.moon, xMoon, yMoon, null);                                              //moon with revolution considered
-            gfx.drawImage(AssetsImg.rktDef, xOrbiter, yOrbiter, null);                                      //our rocket
-            gfx.drawImage(AssetsImg.earth, CNVS_WIDTH / 2 - 8, CNVS_HEIGHT / 2 - 8, null);                  //earth
+            gfx.drawArc(hOrbiter - aOrbiter / 2, kOrbiter - bOrbiter / 2, aOrbiter, bOrbiter, 0, 360);      // orbit of rocket
+            gfx.drawArc(CNVS_WIDTH / 2 - 250, CNVS_HEIGHT / 2 - 250, 500, 500, 0, 360);                     // draw orbit of moon
+            Entities.moon(xMoon, yMoon).render(gfx);                                              // moon with revolution considered
+            Entities.rktDef(xOrbiter, yOrbiter).render(gfx);                                      // our rocket
+            Entities.earth(CNVS_WIDTH / 2 - 8, CNVS_HEIGHT / 2 - 8).render(gfx);                  // earth
         } else if (AssetsVars.activity == Activities.LUNAR_ENTRY) {
-            gfx.drawImage(AssetsImg.stars, 0, 0, CNVS_WIDTH, CNVS_HEIGHT, null);
+            Entity star = Entities.stars(0, 0);
+            star.xBound = CNVS_WIDTH;
+            star.yBound = CNVS_HEIGHT;
+            star.render(gfx);
             gfx.drawArc(0, 0, (int) entryR, (int) entryH, 0, 90);
-            gfx.drawImage(AssetsImg.rktDef, xEntry, yEntry, null);
+            Entities.rktDef(xEntry, yEntry).render(gfx);
             gfx.drawImage(AssetsImg.lunSurface, 0, CNVS_HEIGHT - 64, ui);
         } else if (AssetsVars.activity == Activities.POST_LUNAR_ENTRY) {
-            gfx.drawImage(AssetsImg.stars, 0, 0, CNVS_WIDTH, CNVS_HEIGHT, null);
-
+            Entity star = Entities.stars(0, 0);
+            star.xBound = CNVS_WIDTH;
+            star.yBound = CNVS_HEIGHT;
+            star.render(gfx);
         } else if (AssetsVars.activity == Activities.NEAR_LUNAR_SURFACE) {
-            gfx.drawImage(AssetsImg.stars, 0, 0, CNVS_WIDTH, CNVS_HEIGHT, null);
-
+            Entity star = Entities.stars(0, 0);
+            star.xBound = CNVS_WIDTH;
+            star.yBound = CNVS_HEIGHT;
+            star.render(gfx);
         } else if (AssetsVars.activity == Activities.MISSION_SUCCESFULL) {
             gfx.clearRect(0, 0, CNVS_WIDTH, CNVS_HEIGHT);
-            gfx.drawImage(AssetsImg.Success, 0, 0, CNVS_WIDTH, CNVS_HEIGHT, null);
+            Entity success = Entities.Success(0, 0);
+            success.xBound = CNVS_WIDTH;
+            success.yBound = CNVS_HEIGHT;
+            success.render(gfx);
         } else if (AssetsVars.activity == Activities.MISSION_FAILED) {
             gfx.clearRect(0, 0, CNVS_WIDTH, CNVS_HEIGHT);
-            gfx.drawImage(AssetsImg.Failure, 0, 0, CNVS_WIDTH, CNVS_HEIGHT, null);
+            Entity failure = Entities.Failure(0, 0);
+            failure.xBound = CNVS_WIDTH;
+            failure.yBound = CNVS_HEIGHT;
+            failure.render(gfx);
         }
-        //Makes the next available buffer visible.
+        // Makes the next available buffer visible.
         bs.show();
-        /*Smoothens graphics through optimizations
+        /* Smoothens graphics through optimizations
          */
         Toolkit.getDefaultToolkit().sync();
         /*Disposes off this graphics context and
@@ -305,11 +317,11 @@ class Sim implements Runnable {
              * display the GUI components.
              */
             ui = new GUI(title, width, height);
-            //Call initiate() from class Assets.
-            AssetsImg.initiate();
+            // Call initiate() from class Entities.
+            Entities.initiate();
         }
         Console.write ("\rSystems online...");
-        //Get the canvas width and height.
+        // Get the canvas width and height.
         CNVS_WIDTH = width;
         CNVS_HEIGHT = height;
         hOrbiter = CNVS_WIDTH / 2;
@@ -332,24 +344,24 @@ class Sim implements Runnable {
             deltaUpdate += (now - lastTime) / timePerUpdate;
             deltaFrames += (now - lastTime) / timePerFrame;
             lastTime = now;
-            //Value updater
+            // Value updater
             if (deltaUpdate >= 1 && AssetsVars.warpF > 0) {
-                //Calls update() to update values.
+                // Calls update() to update values.
                 update();
                 deltaUpdate--;
             }
-            //Frames per second, higher frames makes display smooth
+            // Frames per second, higher frames makes display smooth
             if (deltaFrames >= 1 && !Sim.noGUI) {
-                //Calls render() to draw to screen.
+                // Calls render() to draw to screen.
                 render();
                 deltaFrames--;
             }
         }
-        //Calls new Sim.stop() to close thread.
+        // Calls new Sim.stop() to close thread.
         stop();
     }
 
-    //Method responsible for starting thread.
+    // Method responsible for starting thread.
     public synchronized void start() {
         /*Prevents errors by not starting thread if
          *it's already running.
@@ -357,9 +369,9 @@ class Sim implements Runnable {
         if (running) {
             return;
         }
-        //Sets a flag variable true to denote thread is running.
+        // Sets a flag variable true to denote thread is running.
         running = true;
-        //Defines new Thread object
+        // Defines new Thread object
         th = new Thread(this);
         /*Start Thread th, following method exists in a
          *library class, NOT to be confused with mthod
@@ -368,7 +380,7 @@ class Sim implements Runnable {
         th.start();
     }
 
-    //Method responsible for stopping thread
+    // Method responsible for stopping thread
     public synchronized void stop() {
         /*Prevents errors by not closing thread if
          *it's already not running
@@ -376,7 +388,7 @@ class Sim implements Runnable {
         if (!running) {
             return;
         }
-        //Sets a flag variable false to denote thread is not running
+        // Sets a flag variable false to denote thread is not running
         running = false;
         /*Safely closes the thread
          *NOTE that stop method is deprecated
