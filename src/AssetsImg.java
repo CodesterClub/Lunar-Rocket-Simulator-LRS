@@ -1,6 +1,8 @@
 import java.awt.image.BufferedImage;
 
-public class AssetsImg {
+public class AssetsImg
+{
+    protected static boolean init = false;
     /* Global BufferedImage object declarations,
      * each object is used to store 1 image.
      */
@@ -44,7 +46,11 @@ public class AssetsImg {
     // Global variable declaratons.
     private static final int WIDTH = 64, HEIGHT = 64;
 
-    public static void initiate(){
+    public static void initiate()
+    {
+        if (init) return;
+        else init = true;
+
         // Define SpriteSheet object.
         launchPad12x2 = new SpriteSheet(ImageLoader.loadImage("res/launchPad12x2.png"));
         Launchtower1x7 = new SpriteSheet(ImageLoader.loadImage("res/Launchtower1x7.png"));

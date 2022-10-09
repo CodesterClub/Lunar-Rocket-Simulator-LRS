@@ -12,8 +12,6 @@ public class Entities
     protected static Entity m_rktDef;          // Dot representing pos of rocket
     protected static Entity m_earth;
     protected static Entity m_moon;
-    protected static Entity m_stars;           // Stars
-    protected static Entity m_skyGrad;         // Sky
     protected static Entity m_rkt;             // Rocket body while payload ejection
     protected static Entity m_rktCovUp;        // Payload Upper Cover
     protected static Entity m_rktCovDown;      // Payload Lower Cover
@@ -27,8 +25,6 @@ public class Entities
     protected static Entity m_lander128F;      // lander lands seen from close, eng off
     protected static Entity m_lander128B;      // lander lands seen from close, eng burn
     protected static Entity m_lunSurface;      // moon surface
-    protected static Entity m_Success;
-    protected static Entity m_Failure;
 
     public static void initiate()
     {
@@ -175,26 +171,6 @@ public class Entities
         }
     }
 
-    public static Entity stars(int x, int y)
-    {
-        if (m_stars == null) return m_stars = new Entity(x, y, AssetsImg.stars);
-        else {
-            m_stars.x = x;
-            m_stars.y = y;
-            return m_stars;
-        }
-    }
-
-    public static Entity skyGrad(int x, int y)
-    {
-        if (m_skyGrad == null) return m_skyGrad = new Entity(x, y, AssetsImg.skyGrad);
-        else {
-            m_skyGrad.x = x;
-            m_skyGrad.y = y;
-            return m_skyGrad;
-        }
-    }
-
     public static Entity rkt(int x, int y)
     {
         if (m_rkt == null) return m_rkt = new Entity(x, y, AssetsImg.rkt);
@@ -252,32 +228,6 @@ public class Entities
             m_moduleRsld.x = x;
             m_moduleRsld.y = y;
             return m_moduleRsld;
-        }
-    }
-
-    public static Entity Success(int x, int y)
-    {
-        if (m_Success == null) {
-            m_Success = new Entity(x, y, AssetsImg.Success);
-            m_Success.isSoft = true;
-            return m_Success;
-        } else {
-            m_Success.x = x;
-            m_Success.y = y;
-            return m_Success;
-        }
-    }
-
-    public static Entity Failure(int x, int y)
-    {
-        if (m_Failure == null) {
-            m_Failure = new Entity(x, y, AssetsImg.Failure);
-            m_Failure.isSoft = true;
-            return m_Failure;
-        } else {
-            m_Failure.x = x;
-            m_Failure.y = y;
-            return m_Failure;
         }
     }
 }
