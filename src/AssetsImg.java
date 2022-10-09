@@ -25,10 +25,10 @@ public class AssetsImg {
     protected static BufferedImage rktCovUp;        //Payload Upper Cover
     protected static BufferedImage rktCovDown;      //Payload Lower Cover
     protected static BufferedImage payLoad;         //Payload ie Module and lander
-    protected static BufferedImage LanderBrkOff;    //lander breaks off module
-    protected static BufferedImage ModuleRsld;      //Module released of lander and left behind
-    protected static BufferedImage LanderRsldF;     //lander released, eng off
-    protected static BufferedImage LanderRsldB;     //lander released, eng burn
+    protected static BufferedImage landerBrkOff;    //lander breaks off module
+    protected static BufferedImage moduleRsld;      //Module released of lander and left behind
+    protected static BufferedImage landerRsldF;     //lander released, eng off
+    protected static BufferedImage landerRsldB;     //lander released, eng burn
     protected static BufferedImage lander64F;       //lander lands seen from dist, eng off
     protected static BufferedImage lander64B;       //lander lands seen from dist, eng burn
     protected static BufferedImage lander128F;      //lander lands seen from close, eng off
@@ -77,11 +77,11 @@ public class AssetsImg {
         rktCovDown=payloadRsl0x0.Crop(7*WIDTH, 3*HEIGHT, 7*WIDTH, 2*HEIGHT);
 
         payLoad=releases4x3.Crop(0*WIDTH, 0*HEIGHT, 7*WIDTH, 3*HEIGHT);
-        LanderBrkOff=releases4x3.Crop(1*WIDTH, 3*HEIGHT, 4*WIDTH, 3*HEIGHT);
-        ModuleRsld=releases4x3.Crop(1*WIDTH, 6*HEIGHT, 4*WIDTH, 3*HEIGHT);
+        landerBrkOff=releases4x3.Crop(1*WIDTH, 3*HEIGHT, 4*WIDTH, 3*HEIGHT);
+        moduleRsld=releases4x3.Crop(1*WIDTH, 6*HEIGHT, 4*WIDTH, 3*HEIGHT);
 
-        /*LanderRsldF=lander0x0.Crop(1*WIDTH, 7*HEIGHT, 2*WIDTH, 2*HEIGHT);
-        LanderRsldB=lander0x0.Crop(1*WIDTH, 1*HEIGHT, 2*WIDTH, 2*HEIGHT);
+        /*landerRsldF=lander0x0.Crop(1*WIDTH, 7*HEIGHT, 2*WIDTH, 2*HEIGHT);
+        landerRsldB=lander0x0.Crop(1*WIDTH, 1*HEIGHT, 2*WIDTH, 2*HEIGHT);
         lander64F=lander0x0.Crop(0*WIDTH, 5*HEIGHT, 1*WIDTH, 1*HEIGHT);
         lander64B=lander0x0.Crop(0*WIDTH, 7*HEIGHT, 1*WIDTH, 1*HEIGHT);
         lander128F=lander0x0.Crop(1*WIDTH, 3*HEIGHT, 2*WIDTH, 2*HEIGHT);
