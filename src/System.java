@@ -16,7 +16,7 @@ public class System
     protected List<Entity> entities;
 
     /**
-     * A system is a collection of many entites
+     * A system is a collection of many entites.
      * @param Canvas The canvas where the system is drawn
      * @param BufferedImage The background image
      * @param int x coordinate of system bg
@@ -37,7 +37,7 @@ public class System
         this.entities = null;
     }
     /**
-     * add an entity to the system
+     * Add an entity to the system.
      * @param Entity
      */
     public void addEntity(Entity e)
@@ -47,8 +47,8 @@ public class System
         this.entities.add(e);
     }
     /**
-     * update the system, keeps entities static
-     * useful for motion in POV of entities
+     * Update the system, keeps entities static.
+     * Useful for motion in POV of entities.
      * @param int delta-x
      * @param int delta-y
      */
@@ -58,8 +58,8 @@ public class System
         this.y += dy;
     }
     /**
-     * update the system with entites
-     * useful for motion in POV of player
+     * Update the system with entites.
+     * Useful for motion in POV of player.
      * @param int delta-x
      * @param int delta-y
      * @param boolean movEntities
@@ -73,7 +73,7 @@ public class System
                 e.update(dx, dy);
     }
     /**
-     * update the system by absolute position
+     * Update the system by absolute position.
      * @param int new-x
      * @param int new-y
      */
@@ -84,7 +84,7 @@ public class System
         this.update(dx, dy);
     }
     /**
-     * update the system with enties by absolute position
+     * Update the system with enties by absolute position.
      * @param int new-x
      * @param int new-y
      * @param boolean movEntities
@@ -96,7 +96,7 @@ public class System
         this.update(dx, dy, true);
     }
     /**
-     * render system with the entities
+     * Render system with the entities.
      */
     public void render()
     {
@@ -110,7 +110,7 @@ public class System
         gfx.dispose();
     }
     /**
-     * flush system with bg and all resources of its entities
+     * Flush system with bg and all resources of its entities.
      */
     public void flush()
     {

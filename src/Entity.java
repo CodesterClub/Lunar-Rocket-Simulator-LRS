@@ -7,9 +7,21 @@ public class Entity
 {
     public int x, y;
     public int xBound, yBound;
-    boolean isSoft; // a soft entity cannot interact with any other entity
     protected BufferedImage entityImg;
     protected List<Entity> attatchments;
+
+    /**
+     * A soft entity cannot interact with any other entity.
+     * Comes into play during collision detection.
+     */
+    protected boolean isSoft;
+
+    /**
+     * An entity is an existence, visualised by its image attribute.
+     * @param BufferedImage The attribute image
+     * @param int x coordinate entity
+     * @param int y coordinate entity
+     */
     public Entity(BufferedImage img, int x, int y)
     {
         this.isSoft = false;
@@ -21,6 +33,11 @@ public class Entity
         this.yBound = img.getHeight();
         this.attatchments = null;
     }
+    /**
+     * Updates posn of an entity along with its attatchments.
+     * @param int delta-x
+     * @param int delta-y
+     */
     public void update(int dx, int dy)
     {
         this.x += dx;
@@ -30,13 +47,21 @@ public class Entity
             e.y += dy;
         }
     }
+    /**
+     * Moves an entity to absolute posn along with its attatchments.
+     * @param int new-x
+     * @param int new-y
+     */
     public void move(int x, int y)
     {
         int dx = x - this.x;
         int dy = y - this.y;
         this.update(dx, dy);
     }
-    /** Draw this and its attatchments */
+    /**
+     * Draw the entity along with its attatchments.
+     * @param Graphics the graphics object used for drawing
+     */
     public void render(Graphics gfx)
     {
         gfx.drawImage(this.entityImg, this.x, this.y, null);
@@ -44,9 +69,9 @@ public class Entity
             gfx.drawImage(e.entityImg, e.x, e.y, null);
     }
     /**
-     * Attatch multiple entities to create a larger compound
-     * Do note that newly attatched entities get drawn over older ones
-     * Also, the parent entity is drawn before its attatchments
+     * Attatch multiple entities to create a larger compound.
+     * Do NOTE that newly attatched entities get drawn over older ones.
+     * Also, the parent entity is drawn before its attatchments.
      */
     public void attatch(Entity e)
     {
@@ -54,6 +79,9 @@ public class Entity
             this.attatchments = new ArrayList<Entity>();
         this.attatchments.add(e);
     }
+    /**
+     * Flush entity resources along with its attatchments
+     */
     public void flush()
     {
         this.entityImg.flush();
