@@ -12,34 +12,42 @@ class Sim implements Runnable {
     protected boolean running = false;
     protected int CNVS_WIDTH;
     protected int CNVS_HEIGHT;
-    protected byte state;
-    protected double obsTime;
-    protected boolean outOfFuel = false;
-    // belowKarman vars
-    protected int xRktLaunch = (int) (5.8 * 64), yRktCone = 66 - 40, yRktS3 = 130 - 40, yRktS2 = 258 - 40, yRktS1 = 386 - 40, yRktBurn = 514 - 40, xFlame = (int) (5.8 * 64) + 15;
-    protected int yTow = 1 * 64 - 40, yPad = 8 * 64 - 40, ySky = -9232, yStars = 0, yStage = 0;
-    // beyondKarman vars: release module
-    protected int yCovUp = 160;
-    protected int yCovDown = 6 * 64;
-    protected int xPayload = -192;
-    protected int fx = 0;
-    // beyondKarman vars: orbit motion
-    protected int xMoon, yMoon;
-    protected int xOrbiter, yOrbiter, aOrbiter = 30, bOrbiter = 30, hOrbiter, kOrbiter;
-    protected double distOrbiter = 5.0;
-    protected double tOrbiter = 0, wOrbiter;
-    // lunEntry vars
-    protected int yEntry, xEntry = 0;               // x and y, projectile motion trajectory
-    protected double entryH, entryR, entryVx;       // param of a projectile motion
-    // postLunEntry vars
-    protected int yLander;                          // y, linear  downward motion of lander
-    // nearLunSurface vars
-    protected int yLun;                             // y, linear upward motion of lunar surface
+
     // Global object declarations.
     protected GUI ui;
     protected BufferStrategy bs;
     protected Graphics gfx;
     protected Thread th;
+
+    protected byte state;
+    protected double obsTime;
+    protected boolean outOfFuel = false;
+
+    // belowKarman vars
+    protected int xRktLaunch = (int) (5.8 * 64), yRktCone = 66 - 40, yRktS3 = 130 - 40, yRktS2 = 258 - 40, yRktS1 = 386 - 40, yRktBurn = 514 - 40, xFlame = (int) (5.8 * 64) + 15;
+    protected int yTow = 1 * 64 - 40, yPad = 8 * 64 - 40, ySky = -9232, yStars = 0, yStage = 0;
+
+    // beyondKarman vars: release module
+    protected int yCovUp = 160;
+    protected int yCovDown = 6 * 64;
+    protected int xPayload = -192;
+    protected int fx = 0;
+
+    // beyondKarman vars: orbit motion
+    protected int xMoon, yMoon;
+    protected int xOrbiter, yOrbiter, aOrbiter = 30, bOrbiter = 30, hOrbiter, kOrbiter;
+    protected double distOrbiter = 5.0;
+    protected double tOrbiter = 0, wOrbiter;
+
+    // lunEntry vars
+    protected int yEntry, xEntry = 0;               // x and y, projectile motion trajectory
+    protected double entryH, entryR, entryVx;       // param of a projectile motion
+
+    // postLunEntry vars
+    protected int yLander;                          // y, linear  downward motion of lander
+
+    // nearLunSurface vars
+    protected int yLun;                             // y, linear upward motion of lunar surface
 
     public Sim(String title, int width, int height) {
         this.state = 0;
@@ -66,8 +74,8 @@ class Sim implements Runnable {
                 AssetsVars.Mfuel_t = 0;
                 AssetsVars.fuel = 0;
                 outOfFuel = true;
-                Console.write ("\r[E] Out of fuel!");
-                System.out.print ("\r    Press Enter to continue: ");
+                Console.write("\r[E] Out of fuel!");
+                System.out.print("\r    Press Enter to continue: ");
             }
         }
         // Event activities, enclosed in if else construct.
@@ -114,8 +122,8 @@ class Sim implements Runnable {
                 AssetsVars.activity = Activities.BEYOND_KARMAN;
                 AssetsVars.throttle = 0;
                 // Writes mission log
-                Console.write ("\rLAUNCHED SUCCESSFULLY");
-                Console.write ("\r> Entering orbit.....");
+                Console.write("\rLAUNCHED SUCCESSFULLY");
+                Console.write("\r> Entering orbit.....");
             }
         } else if (AssetsVars.activity == Activities.RELEASE_PAYLOAD) {
             // Side activities so this won't have state backup
@@ -126,7 +134,7 @@ class Sim implements Runnable {
                 fx -= 1;
             }
             if (xPayload == -447) {
-                Console.write ("\rDONE: Module ejected");
+                Console.write("\rDONE: Module ejected");
                 AssetsVars.activity = state;
             }
         } else if (AssetsVars.activity == Activities.BEYOND_KARMAN) {
@@ -320,7 +328,7 @@ class Sim implements Runnable {
             // Call initiate() from class Entities.
             Entities.initiate();
         }
-        Console.write ("\rSystems online...");
+        Console.write("\rSystems online...");
         // Get the canvas width and height.
         CNVS_WIDTH = width;
         CNVS_HEIGHT = height;
