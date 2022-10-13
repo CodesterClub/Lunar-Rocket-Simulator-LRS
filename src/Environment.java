@@ -104,8 +104,9 @@ public class Environment
         Graphics gfx = this.bs.getDrawGraphics();
         gfx.clearRect(0, 0, this.width, this.height);
         gfx.drawImage(this.bg, this.x, this.y, null);
-        for (Entity e : this.entities)
-            e.render(gfx);
+        if (this.entities != null)
+            for (Entity e : this.entities)
+                e.render(gfx);
         this.bs.show();
         Toolkit.getDefaultToolkit().sync();
         gfx.dispose();
