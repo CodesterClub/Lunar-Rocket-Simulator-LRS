@@ -1,4 +1,6 @@
 public class AssetsVars {
+    // running flag
+    protected static boolean running = true;
     //boolean markers
     protected static byte activity = 0;
     //Online engine

@@ -11,7 +11,10 @@ JAR_NAME="Lunar-Rocket-Simulator-LRS.jar"
 
 mkdir -p "$BUILD"
 
-if [ "$1" = "clean" ]; then
+if [ "$1" = "run" ] && ( stat "$JAR_NAME" > /dev/null 2> /dev/null ); then
+    java -jar "$JAR_NAME"
+    exit 0
+elif [ "$1" = "clean" ]; then
     rm -rf "$BUILD/"*.class  2> /dev/null
     rm -rf "$BUILD/res"      2> /dev/null
     exit 0
@@ -23,11 +26,14 @@ elif [ "$1" = "cleaner" ]; then
 elif [ "$1" = "" ]; then
     echo "running javac on $SRC/*.java"
     javac -sourcepath "$SRC" -d "$BUILD" -h "$BUILD" $(find "$SRC/" -name "*.java")
+    exitcode=$?
     cp -r "$SRC/res" "$BUILD/"
-    echo "entered sir $BUILD"
+    echo "entered dir $BUILD"
     cd "$BUILD"
-    echo "running jar..."
-    jar -cvmf "../$MANIFEST" "../$JAR_NAME" $(find ./)
+    if (( exitcode == 0 )); then
+        echo "running jar..."
+        jar -cvmf "../$MANIFEST" "../$JAR_NAME" $(find ./)
+    fi
     echo "done"
 else
     echo "build.sh: invalid argument"

@@ -42,8 +42,6 @@ public class Entities
         m_rktDef = null;
         m_earth = null;
         m_moon = null;
-        m_stars = null;
-        m_skyGrad = null;
         m_rkt = null;
         m_rktCovUp = null;
         m_rktCovDown = null;
@@ -57,8 +55,6 @@ public class Entities
         m_lander128F = null;
         m_lander128B = null;
         m_lunSurface = null;
-        m_Success = null;
-        m_Failure = null;
     }
 
     public static Entity rktS1(int x, int y)

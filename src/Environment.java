@@ -6,7 +6,7 @@ import java.awt.image.BufferStrategy;
 import java.util.List;
 import java.util.ArrayList;
 
-public class System
+public class Environment
 {
     protected int width, height;
     protected BufferedImage bg;
@@ -16,13 +16,13 @@ public class System
     protected List<Entity> entities;
 
     /**
-     * A system is a collection of many entites.
-     * @param Canvas The canvas where the system is drawn
+     * A env is a collection of many entites.
+     * @param Canvas The canvas where the env is drawn
      * @param BufferedImage The background image
-     * @param int x coordinate of system bg
-     * @param int y coordinate of system bg
+     * @param int x coordinate of env bg
+     * @param int y coordinate of env bg
      */
-    public System(Canvas canvas, BufferedImage bg, int x, int y)
+    public Environment(Canvas canvas, BufferedImage bg, int x, int y)
     {
         this.bg = bg;
         this.x = x;
@@ -37,18 +37,18 @@ public class System
         this.entities = null;
     }
     /**
-     * Add an entity to the system.
+     * Add an entity to the env.
      * @param Entity
      */
     public void addEntity(Entity e)
     {
-        e.system = this;
+        e.env = this;
         if (this.entities == null)
             this.entities = new ArrayList<Entity>();
         this.entities.add(e);
     }
     /**
-     * Update the system, keeps entities static.
+     * Update the env, keeps entities static.
      * Useful for motion in POV of entities.
      * @param int delta-x
      * @param int delta-y
@@ -59,7 +59,7 @@ public class System
         this.y += dy;
     }
     /**
-     * Update the system with entites.
+     * Update the env with entites.
      * Useful for motion in POV of player.
      * @param int delta-x
      * @param int delta-y
@@ -70,11 +70,11 @@ public class System
         this.x += dx;
         this.y += dy;
         if (movEntities)
-            for (Entity e : this.entites)
+            for (Entity e : this.entities)
                 e.update(dx, dy);
     }
     /**
-     * Update the system by absolute position.
+     * Update the env by absolute position.
      * @param int new-x
      * @param int new-y
      */
@@ -85,7 +85,7 @@ public class System
         this.update(dx, dy);
     }
     /**
-     * Update the system with enties by absolute position.
+     * Update the env with enties by absolute position.
      * @param int new-x
      * @param int new-y
      * @param boolean movEntities
@@ -97,14 +97,14 @@ public class System
         this.update(dx, dy, true);
     }
     /**
-     * Render system with the entities.
+     * Render env with the entities.
      */
     public void render()
     {
         Graphics gfx = this.bs.getDrawGraphics();
         gfx.clearRect(0, 0, this.width, this.height);
         gfx.drawImage(this.bg, this.x, this.y, null);
-        for (Entity e : this.entites)
+        for (Entity e : this.entities)
             e.render(gfx);
         this.bs.show();
         Toolkit.getDefaultToolkit().sync();
@@ -118,12 +118,12 @@ public class System
         return this.bs.getDrawGraphics();
     }
     /**
-     * Flush system with bg and all resources of its entities.
+     * Flush env with bg and all resources of its entities.
      */
     public void flush()
     {
         this.bg.flush();
-        if (this.entites != null)
+        if (this.entities != null)
             for (Entity e : this.entities)
                 e.flush();
         this.entities = null;

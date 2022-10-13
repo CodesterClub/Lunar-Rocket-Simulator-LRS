@@ -187,95 +187,96 @@ class Sim implements Runnable {
 
     // Method is responsible for drawing on Canvas cnvs_space.
     protected void render() {
+        Environment env = null;
         if (AssetsVars.activity == Activities.BELOW_KARMAN || AssetsVars.activity == Activities.LAUNCH) {
-            if (ySky >= -1) {
-                // system.flush();
-                system = Systems.stars(ui.getCanvas(), 0, 0);
-            }
-            if (AssetsImg.skyGrad != null) {
-                // system.flush();
-                system = Systems.skyGrad(ui.getCanvas(), 0, ySky);
+            if (ySky >= -1 || AssetsImg.skyGrad == null) {
+                // env.flush();
+                env = Environments.stars(ui.getCanvas(), 0, 0);
+            } else {
+                // env.flush();
+                env = Environments.skyGrad(ui.getCanvas(), 0, ySky);
             }
             if (AssetsVars.throttle > 0) {
 		        switch (AssetsVars.stageDumped) {
 		        case 0:
-			        system.addEntity(Entites.rktBurn(xRktLaunch, yRktBurn));
+			        env.addEntity(Entities.rktBurn(xRktLaunch, yRktBurn));
 			        break;
 		        case 1:
-			        system.addEntity(Entites.rktFlame(xFlame, AssetsVars.yFlame));
+			        env.addEntity(Entities.rktFlame(xFlame, AssetsVars.yFlame));
 			        break;
 		        case 2:
-			        system.addEntity(Entites.rktFlame(xFlame, AssetsVars.yFlame));
+			        env.addEntity(Entities.rktFlame(xFlame, AssetsVars.yFlame));
 			        break;
 		        case 3:
-			        system.addEntity(Entites.rktFlame(xFlame, AssetsVars.yFlame));
+			        env.addEntity(Entities.rktFlame(xFlame, AssetsVars.yFlame));
 			        break;
 		        }
             }
             if (AssetsImg.rktCone != null) {
-                system.addEntity(Entites.rktCone(xRktLaunch, yRktCone));
+                env.addEntity(Entities.rktCone(xRktLaunch, yRktCone));
             }
             if (AssetsImg.rktS3 != null) {
-                system.addEntity(Entites.rktS3(xRktLaunch, yRktS3));
+                env.addEntity(Entities.rktS3(xRktLaunch, yRktS3));
             }
             if (AssetsImg.rktS2 != null) {
-                system.addEntity(Entites.rktS2(xRktLaunch, yRktS2));
+                env.addEntity(Entities.rktS2(xRktLaunch, yRktS2));
             }
             if (AssetsImg.rktS1 != null) {
-                system.addEntity(Entites.rktS1(xRktLaunch, yRktS1));
+                env.addEntity(Entities.rktS1(xRktLaunch, yRktS1));
             }
             if (AssetsImg.lPad != null) {
-                system.addEntity(Entites.lPad(0, yPad));
+                env.addEntity(Entities.lPad(0, yPad));
             }
             if (AssetsImg.tower != null) {
-                system.addEntity(Entites.tower((int) (4.6 * 64), yTow));
+                env.addEntity(Entities.tower((int) (4.6 * 64), yTow));
             }
             if (ySky >= 768) {
-                Entites.m_lPad.flush();
-                Entites.m_tower.flush();
-                Entites.m_skyGrad.flush();
+                Entities.m_lPad.flush();
+                Entities.m_tower.flush();
+                Environments.m_skyGrad.flush();
             }
         } else if (AssetsVars.activity == Activities.RELEASE_PAYLOAD) {
-            // system.flush();
-            system = Systems.stars(ui.getCanvas(), 0, 0);
-            system.addEntity(Entites.payLoad(192 - 32, 160 + 64));
-            system.addEntity(Entites.rkt(xPayload, 160));
-            system.addEntity(Entites.rktCovUp(256 + fx, yCovUp));
-            system.addEntity(Entites.rktCovDown(256 + fx, yCovDown));
+            // env.flush();
+            env = Environments.stars(ui.getCanvas(), 0, 0);
+            env.addEntity(Entities.payLoad(192 - 32, 160 + 64));
+            env.addEntity(Entities.rkt(xPayload, 160));
+            env.addEntity(Entities.rktCovUp(256 + fx, yCovUp));
+            env.addEntity(Entities.rktCovDown(256 + fx, yCovDown));
             if (xPayload == -447) {
-                Entites.m_rkt.flush();
-                Entites.m_rktCovUp.flush();
-                Entites.m_srktCovDown.flush();
+                Entities.m_rkt.flush();
+                Entities.m_rktCovUp.flush();
+                Entities.m_rktCovDown.flush();
             }
         } else if (AssetsVars.activity == Activities.BEYOND_KARMAN) {
-            // system.flush();
-            system = Systems.stars(ui.getCanvas(), 0, 0);
-            system.getGfx().setColor(Color.darkGray);
-            system.getGfx().drawArc(hOrbiter - aOrbiter / 2, kOrbiter - bOrbiter / 2, aOrbiter, bOrbiter, 0, 360);      // orbit of rocket
-            system.getGfx().drawArc(CNVS_WIDTH / 2 - 250, CNVS_HEIGHT / 2 - 250, 500, 500, 0, 360);                     // draw orbit of moon
-            system.addEntity(Entites.moon(xMoon, yMoon));                                              // moon with revolution considered
-            system.addEntity(Entites.rktDef(xOrbiter, yOrbiter));                                      // our rocket
-            system.addEntity(Entites.earth(CNVS_WIDTH / 2 - 8, CNVS_HEIGHT / 2 - 8));                  // earth
+            // env.flush();
+            env = Environments.stars(ui.getCanvas(), 0, 0);
+            env.getGfx().setColor(Color.darkGray);
+            env.getGfx().drawArc(hOrbiter - aOrbiter / 2, kOrbiter - bOrbiter / 2, aOrbiter, bOrbiter, 0, 360);      // orbit of rocket
+            env.getGfx().drawArc(CNVS_WIDTH / 2 - 250, CNVS_HEIGHT / 2 - 250, 500, 500, 0, 360);                     // draw orbit of moon
+            env.addEntity(Entities.moon(xMoon, yMoon));                                              // moon with revolution considered
+            env.addEntity(Entities.rktDef(xOrbiter, yOrbiter));                                      // our rocket
+            env.addEntity(Entities.earth(CNVS_WIDTH / 2 - 8, CNVS_HEIGHT / 2 - 8));                  // earth
         } else if (AssetsVars.activity == Activities.LUNAR_ENTRY) {
-            // system.flush();
-            system = Systems.stars(ui.getCanvas(), 0, 0);
-            system.getGfx().drawArc(0, 0, (int) entryR, (int) entryH, 0, 90);
-            system.addEntity(Entites.rktDef(xEntry, yEntry));
-            system.getGfx().drawImage(AssetsImg.lunSurface, 0, CNVS_HEIGHT - 64, ui);
+            // env.flush();
+            env = Environments.stars(ui.getCanvas(), 0, 0);
+            env.getGfx().drawArc(0, 0, (int) entryR, (int) entryH, 0, 90);
+            env.addEntity(Entities.rktDef(xEntry, yEntry));
+            env.getGfx().drawImage(AssetsImg.lunSurface, 0, CNVS_HEIGHT - 64, ui);
         } else if (AssetsVars.activity == Activities.POST_LUNAR_ENTRY) {
-            // system.flush();
-            system = Systems.stars(ui.getCanvas(), 0, 0);
+            // env.flush();
+            env = Environments.stars(ui.getCanvas(), 0, 0);
         } else if (AssetsVars.activity == Activities.NEAR_LUNAR_SURFACE) {
-            // system.flush();
-            system = Systems.stars(ui.getCanvas(), 0, 0);
+            // env.flush();
+            env = Environments.stars(ui.getCanvas(), 0, 0);
         } else if (AssetsVars.activity == Activities.MISSION_SUCCESFULL) {
-            // system.flush();
-            system = Systems.Success(ui.getCanvas(), 0, 0);
+            // env.flush();
+            env = Environments.Success(ui.getCanvas(), 0, 0);
         } else if (AssetsVars.activity == Activities.MISSION_FAILED) {
-            // system.flush();
-            system = Systems.Failure(ui.getCanvas(), 0, 0);
+            // env.flush();
+            env = Environments.Failure(ui.getCanvas(), 0, 0);
         }
-        system.render();
+        if (env != null)
+            env.render();
     }
 
     protected void initiate() {
@@ -286,9 +287,9 @@ class Sim implements Runnable {
             ui = new GUI(title, width, height);
             // Call initiate() from class Entities.
             Entities.initiate();
-            Systems.intiate();
+            Environments.initiate();
         }
-        Console.write("\rSystems online...");
+        Console.write("\rEnvironments online...");
         // Get the canvas width and height.
         CNVS_WIDTH = width;
         CNVS_HEIGHT = height;

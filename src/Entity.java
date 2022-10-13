@@ -8,9 +8,9 @@ public class Entity
     public int x, y;
     public int xBound, yBound;
     protected BufferedImage entityImg;
-    protected List<Entity> attatchments;
+    protected List<Entity> attachments;
 
-    protected System system;
+    protected Environment env;
     protected Entity parent;
 
     /**
@@ -25,7 +25,7 @@ public class Entity
      * @param int x coordinate entity
      * @param int y coordinate entity
      */
-    public Entity(BufferedImage img, int x, int y)
+    public Entity(int x, int y, BufferedImage img)
     {
         this.isSoft = false;
         this.x = x;
@@ -34,10 +34,10 @@ public class Entity
         else throw new NullPointerException("Entity: image is null");
         this.xBound = img.getWidth();
         this.yBound = img.getHeight();
-        this.attatchments = null;
+        this.attachments = null;
     }
     /**
-     * Updates posn of an entity along with its attatchments.
+     * Updates posn of an entity along with its attachments.
      * @param int delta-x
      * @param int delta-y
      */
@@ -45,13 +45,13 @@ public class Entity
     {
         this.x += dx;
         this.y += dy;
-        for (Entity e : this.attatchments) {
+        for (Entity e : this.attachments) {
             e.x += dx;
             e.y += dy;
         }
     }
     /**
-     * Moves an entity to absolute posn along with its attatchments.
+     * Moves an entity to absolute posn along with its attachments.
      * @param int new-x
      * @param int new-y
      */
@@ -62,39 +62,40 @@ public class Entity
         this.update(dx, dy);
     }
     /**
-     * Draw the entity along with its attatchments.
+     * Draw the entity along with its attachments.
      * @param Graphics the graphics object used for drawing
      */
     public void render(Graphics gfx)
     {
         gfx.drawImage(this.entityImg, this.x, this.y, null);
-        for (Entity e : this.attatchments)
-            gfx.drawImage(e.entityImg, e.x, e.y, null);
+        if (this.attachments != null)
+            for (Entity e : this.attachments)
+                gfx.drawImage(e.entityImg, e.x, e.y, null);
     }
     /**
      * Attatch multiple entities to create a larger compound.
      * Do NOTE that newly attatched entities get drawn over older ones.
-     * Also, the parent entity is drawn before its attatchments.
+     * Also, the parent entity is drawn before its attachments.
      */
     public void attatch(Entity e)
     {
         e.parent = this;
-        if (this.attatchments == null)
-            this.attatchments = new ArrayList<Entity>();
-        this.attatchments.add(e);
+        if (this.attachments == null)
+            this.attachments = new ArrayList<Entity>();
+        this.attachments.add(e);
     }
     /**
-     * Flush entity resources along with its attatchments
+     * Flush entity resources along with its attachments
      */
     public void flush()
     {
-        this.parent.attatchments.remove(this);
-        this.system.attatchments.remove(this);
+        this.parent.attachments.remove(this);
+        this.env.entities.remove(this);
         this.entityImg.flush();
         this.entityImg = null;
-        if (this.attatchments != null)
-            for (Entity e : this.attatchments)
+        if (this.attachments != null)
+            for (Entity e : this.attachments)
                 e.flush();
-        this.attatchments = null;
+        this.attachments = null;
     }
 }
