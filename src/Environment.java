@@ -12,7 +12,7 @@ public class Environment
     protected BufferedImage bg;
     protected BufferStrategy bs;
 
-    protected int x, y;
+    protected int x, y, dxEntity, dyEntity, ddxEntity, ddyEntity;
     protected List<Entity> entities;
 
     /**
@@ -21,12 +21,18 @@ public class Environment
      * @param BufferedImage The background image
      * @param int x coordinate of env bg
      * @param int y coordinate of env bg
+     * @param int default x acceleration of that system due to some potential gradient, pixel/frame2
+     * @param int default y acceleration of that system due to some potential gradient, pixel/frame2
      */
-    public Environment(Canvas canvas, BufferedImage bg, int x, int y)
+    public Environment(Canvas canvas, BufferedImage bg, int x, int y, int ddx, int ddy)
     {
         this.bg = bg;
         this.x = x;
         this.y = y;
+        this.dxEntity = 0;
+        this.dyEntity = 0;
+        this.ddxEntity = ddx;
+        this.ddyEntity = ddy;
         this.width = canvas.getWidth();
         this.height = canvas.getHeight();
         this.bs = canvas.getBufferStrategy();
@@ -105,8 +111,12 @@ public class Environment
         gfx.clearRect(0, 0, this.width, this.height);
         gfx.drawImage(this.bg, this.x, this.y, null);
         if (this.entities != null)
-            for (Entity e : this.entities)
+            for (Entity e : this.entities) {
+                e.update(this.dxEntity, this.dyEntity);
+                this.dxEntity += this.ddxEntity;
+                this.dyEntity += this.ddyEntity;
                 e.render(gfx);
+            }
         this.bs.show();
         Toolkit.getDefaultToolkit().sync();
         gfx.dispose();
