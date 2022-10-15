@@ -15,7 +15,7 @@ public class Environment
     protected int x, y, dxEntity, dyEntity, ddxEntity, ddyEntity;
     protected List<Entity> entities;
 
-/**
+    /**
      * A env is a collection of many entites.
      * @param Canvas The canvas where the env is drawn
      * @param BufferedImage The background image

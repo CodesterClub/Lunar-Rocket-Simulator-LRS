@@ -1,4 +1,5 @@
-public class Activities {
+public class Activities
+{
     // global activity markers
     protected static final int BELOW_KARMAN       =  0;
     protected static final int LAUNCH             =  1;

@@ -15,7 +15,8 @@ final class GUI extends JFrame
     // UI object declarations.
     protected Canvas cnvs_space;
 
-    public GUI(String title,int width, int height){
+    public GUI(String title,int width, int height)
+    {
         this.title = title;
         this.width = width;
         this.height = height;
@@ -58,7 +59,8 @@ final class GUI extends JFrame
     }
 
     // Getter for Canvas cnvs_space.
-    protected Canvas getCanvas(){
+    protected Canvas getCanvas()
+    {
         return cnvs_space;
     }
 }

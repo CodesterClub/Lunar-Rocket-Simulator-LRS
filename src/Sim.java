@@ -3,8 +3,8 @@ import java.awt.Canvas;
 import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
 
-public class Sim implements Runnable {
-
+public class Sim implements Runnable
+{
     // Global variable declaration.
     protected final String title;
     protected final int width, height;
@@ -29,14 +29,16 @@ public class Sim implements Runnable {
 
     // nearLunSurface vars
 
-    public Sim(String title, int width, int height) {
+    public Sim(String title, int width, int height)
+    {
         this.title = title;
         this.width = width;
         this.height = height;
     }
 
     // Method responsible for updating values.
-    protected void update() {
+    protected void update()
+    {
         switch (AssetsVars.activity) {
             case Activities.BELOW_KARMAN: {
                 env = Environments.skyGrad(this.cv, 0, this.height - AssetsImg.skyGrad.getHeight());
@@ -47,12 +49,14 @@ public class Sim implements Runnable {
     }
 
     // Method is responsible for drawing on canvas.
-    protected void render() {
+    protected void render()
+    {
         if (env != null)
             env.render();
     }
 
-    protected void initiate() {
+    protected void initiate()
+    {
         ui = null;
         env = null;
         if (!this.noGUI) {
@@ -68,7 +72,8 @@ public class Sim implements Runnable {
      * Abstract method: Runs the code required to be run on thread
      */
     @Override
-    public void run() {
+    public void run()
+    {
         initiate();
         double deltaUpdate = 0, deltaFrames = 0;
         long now;
@@ -99,7 +104,8 @@ public class Sim implements Runnable {
     }
 
     // Method responsible for starting thread.
-    public synchronized void start() {
+    public synchronized void start()
+    {
         if (running)
             return;
         running = true;
@@ -108,7 +114,8 @@ public class Sim implements Runnable {
     }
 
     // Method responsible for stopping thread
-    public synchronized void stop() {
+    public synchronized void stop()
+    {
         if (!running)
             return;
         running = false;

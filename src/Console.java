@@ -38,12 +38,13 @@ import java.util.StringTokenizer;
  *      altitude
  */
 
-public class Console implements Runnable {
-
+public class Console implements Runnable
+{
     protected Thread th;
     protected boolean running = false;
 
-    protected static String read() {
+    protected static String read()
+    {
         BufferedReader stdin = new BufferedReader(new java.io.InputStreamReader(System.in));
         try {
             return stdin.readLine();
@@ -53,11 +54,13 @@ public class Console implements Runnable {
         return null;
     }
 
-    protected static void write(String str) {
+    protected static void write(String str)
+    {
         System.out.println(str);
     }
 
-    protected String readCommand() {
+    protected String readCommand()
+    {
         BufferedReader stdin = new BufferedReader(new java.io.InputStreamReader(System.in));
         try {
             System.out.print("\nLRS shell> ");
@@ -314,7 +317,8 @@ public class Console implements Runnable {
      * Abstract method: Runs the code required to be run on thread
      */
     @Override
-    public void run() {
+    public void run()
+    {
         while (running) {
             if (!readCommand().equalsIgnoreCase("")) try {
                 // evaluate(AssetsVars.command);
@@ -331,7 +335,8 @@ public class Console implements Runnable {
     }
 
     //Method responsible for starting thread.
-    public synchronized void start() {
+    public synchronized void start()
+    {
         if (running)
             return;
         running = true;
@@ -340,7 +345,8 @@ public class Console implements Runnable {
     }
 
     //Method responsible for stopping thread
-    public synchronized void stop() {
+    public synchronized void stop()
+    {
         if (!running)
             return;
         running = false;
@@ -459,7 +465,8 @@ public class Console implements Runnable {
         }
     }*/
 
-    private void warpTimeActionPerformed(int warpF) {
+    private void warpTimeActionPerformed(int warpF)
+    {
         AssetsVars.warpF = warpF;
     }
 }

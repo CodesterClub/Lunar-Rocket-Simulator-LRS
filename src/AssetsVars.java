@@ -1,4 +1,5 @@
-public class AssetsVars {
+public class AssetsVars
+{
     // quit flag
     protected static boolean quit = false;
     // boolean markers
