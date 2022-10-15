@@ -85,6 +85,15 @@ public class Entity
         this.attachments.add(e);
     }
     /**
+     * Dettatch entity.
+     */
+    public void dettatch(Entity e)
+    {
+        if (this.attachments != null) try {
+            this.attachments.remove(e);
+        } catch(Exception ex) {}
+    }
+    /**
      * Flush entity resources along with its attachments
      */
     public void flush()
