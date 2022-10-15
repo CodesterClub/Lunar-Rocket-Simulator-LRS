@@ -1,5 +1,5 @@
 public class Activities {
-    //global activity markers
+    // global activity markers
     protected static final int BELOW_KARMAN       =  0;
     protected static final int LAUNCH             =  1;
     protected static final int BEYOND_KARMAN      =  2;
