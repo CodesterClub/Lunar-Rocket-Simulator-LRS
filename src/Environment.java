@@ -15,6 +15,31 @@ public class Environment
     protected int x, y, dxEntity, dyEntity, ddxEntity, ddyEntity;
     protected List<Entity> entities;
 
+/**
+     * A env is a collection of many entites.
+     * @param Canvas The canvas where the env is drawn
+     * @param BufferedImage The background image
+     * @param int x coordinate of env bg
+     * @param int y coordinate of env bg
+     */
+    public Environment(Canvas canvas, BufferedImage bg, int x, int y)
+    {
+        this.bg = bg;
+        this.x = x;
+        this.y = y;
+        this.dxEntity = 0;
+        this.dyEntity = 0;
+        this.ddxEntity = 0;
+        this.ddyEntity = 0;
+        this.width = canvas.getWidth();
+        this.height = canvas.getHeight();
+        this.bs = canvas.getBufferStrategy();
+        if (this.bs == null) {
+            canvas.createBufferStrategy(3);
+            this.bs = canvas.getBufferStrategy();
+        }
+        this.entities = null;
+    }
     /**
      * A env is a collection of many entites.
      * @param Canvas The canvas where the env is drawn

@@ -41,16 +41,10 @@ import java.util.StringTokenizer;
 public class Console implements Runnable {
 
     protected Thread th;
-    int tmp = 0;
     protected boolean running = false;
 
-    private boolean isOn_engS1 = false;
-    private boolean isOn_engS2 = false;
-    private boolean isOn_engS3 = false;
-
     protected static String read() {
-        BufferedReader stdin = new BufferedReader(
-                new java.io.InputStreamReader(System.in));
+        BufferedReader stdin = new BufferedReader(new java.io.InputStreamReader(System.in));
         try {
             return stdin.readLine();
         } catch (java.io.IOException ex) {
@@ -64,20 +58,19 @@ public class Console implements Runnable {
     }
 
     protected String readCommand() {
-        BufferedReader stdin = new BufferedReader (
-                new java.io.InputStreamReader (System.in));
+        BufferedReader stdin = new BufferedReader(new java.io.InputStreamReader(System.in));
         try {
-            System.out.print("\nLRS shell> ");                                  // prompt
-            AssetsVars.command = stdin.readLine();                             // store command in variable, kinda uselss
-            return AssetsVars.command;                                          // return that command, also useless
+            System.out.print("\nLRS shell> ");
+            AssetsVars.command = stdin.readLine().trim();
+            return AssetsVars.command;
         } catch (java.io.IOException ex) {
             System.out.println(ex.toString());
         }
         return null;
     }
 
-    private void evaluate(String command) throws Exception {
-        StringTokenizer sT = new StringTokenizer(command, " \n");               // delimiters
+    /*private void evaluate(String command) throws Exception {
+        StringTokenizer sT = new StringTokenizer(command, " \n");
         String cmd = sT.nextToken();
         if (cmd.equalsIgnoreCase("SELECT")) {
             AssetsVars.engON = Byte.parseByte(sT.nextToken());
@@ -315,7 +308,7 @@ public class Console implements Runnable {
             System.out.println("\r[E] no such command: " + command);
             System.out.println("\rEnter HELP for commands list and syntax");
         }
-    }
+    }*/
 
     /**
      * Abstract method: Runs the code required to be run on thread
@@ -323,62 +316,45 @@ public class Console implements Runnable {
     @Override
     public void run() {
         while (running) {
-            if (!readCommand().equalsIgnoreCase("")) {
-                try {
-                    evaluate(AssetsVars.command);                                    // evaluates the command
-                } catch (Exception e) {
-                    System.out.println("\r[E] " + e);
-                    System.out.println("\r    User input error. Please try again");
+            if (!readCommand().equalsIgnoreCase("")) try {
+                // evaluate(AssetsVars.command);
+                if (AssetsVars.command.equalsIgnoreCase("exit")) {
+                    AssetsVars.quit = true;
+                    running = false;
                 }
+            } catch (Exception e) {
+                System.out.println("\r[E] " + e);
+                System.out.println("\r    User input error. Please try again");
             }
         }
-        //Calls new Sim.stop() to close thread.
         stop();
     }
 
     //Method responsible for starting thread.
     public synchronized void start() {
-        /*Prevents errors by not starting thread if
-         *it's already running.
-         */
-        if (running) {
+        if (running)
             return;
-        }
-        // sets runnig flag true
         running = true;
-        //Defines new Thread object
-        th = new Thread (this);
-        /*Start Thread th, following method exists in a
-         *library class, NOT to be confused with mthod
-         *public synchronized void start().
-         */
+        th = new Thread(this);
         th.start();
     }
 
     //Method responsible for stopping thread
     public synchronized void stop() {
-        /*Prevents errors by not closing thread if
-         *it's already not running
-         */
-        if (!running) {
+        if (!running)
             return;
-        }
-        //Sets a flag variable false to denote thread is not running
         running = false;
-        /*Safely closes the thread
-         *NOTE that stop method is deprecated
-         *NOTE join() method always throws InterruptedException
-         */
-        try {
+        if (running) try {
             th.join();
-        } catch (InterruptedException e) {
-            System.out.print(e.toString());
             System.exit(0);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 
     //Event actions
-    private void inputThrust(int thrust) {
+    /*private void inputThrust(int thrust) {
         if ((AssetsVars.engON == 1 && AssetsVars.stageDumped == 0) || (AssetsVars.engON == 2 && AssetsVars.stageDumped == 1) || (AssetsVars.engON == 3 && AssetsVars.stageDumped == 2)) {
             if (!(AssetsVars.activity >= Activities.LAUNCH)) {
                 try {
@@ -481,7 +457,7 @@ public class Console implements Runnable {
         } else {
             System.out.println("\r[E] CAN'T REMOVE FAIRINGS");
         }
-    }
+    }*/
 
     private void warpTimeActionPerformed(int warpF) {
         AssetsVars.warpF = warpF;
